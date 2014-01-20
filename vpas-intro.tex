@@ -76,7 +76,7 @@
 % - Use the \inst command only if there are several affiliations.
 % - Keep it simple, no one is interested in your street address.
 
-\date{Jan. 20th, 2013}
+\date{Jan. 20th, 2014}
 % - Either use conference name or its abbreviation.
 % - Not really informative to the audience, more for people (including
 %   yourself) who are reading the slides online
@@ -119,7 +119,10 @@
 \begin{frame}{系统目标}
   \begin{itemize}
   \item {
-    满足产品供应商通过提高点击单价获取展示的需求，供应商之间可以通过互相竞争点击单价的方式为自己的产品博取更靠前的展示排名
+    满足产品供应商通过提高点击单价获取展示的需求
+  }
+  \item {
+    供应商之间可以通过互相竞争点击单价的方式为自己的产品博取更靠前的展示排名
   }
   \item {
     更灵活的点击计费模式：供应商自主控制参与竞价排名的产品和竞价预算
@@ -160,7 +163,6 @@
   \begin{itemize}
   \item {
     接收竞价查询词参数，产生满足匹配条件的竞价产品排名
-    \pause
   }
   \item {
     综合产品质量以及点击单价计算排名
@@ -290,14 +292,18 @@
     \pause
   \end{block}
   \begin{block}{简洁为美}
-    
+    \begin{itemize}
+      \item {
+        非必要的交互全部省略
+      }
+    \end{itemize}
   \end{block}
 \end{frame}
 
 \subsection{关键设计}
 
 \begin{frame}{关键设计}
-  \begin{block}{保持数据同步}
+  \begin{block}{数据同步(Consistent)}
     \begin{itemize}
       \item {
         意义：保持竞价活力
@@ -308,65 +314,140 @@
   \end{block}
 \end{frame}
 
+\subsection{开发经验}
+
+\begin{frame}{开发经验}{跨业务、跨团队的分布式系统}
+  \begin{block}{开发、自测结束时的状况}
+    \begin{itemize}
+      \item {
+        系统A: 接口A1，接口A2，...
+      }
+      \item {
+        系统B: 接口B1，接口B2，...
+      }
+      \item {
+        A, B各自通过联调的case
+      }
+    \end{itemize}
+    \pause
+  \end{block}
+
+  \begin{block}{如果某组接口失效}
+    \begin{itemize}
+      \item {
+        数据同步模型能否保证？
+        \pause
+      }
+      \item {
+        拔线测试：在一个正常运行的环境里，轮流令这些接口失效
+      }
+      \item {
+        修复了至少2个设计上的缺陷
+      }
+    \end{itemize}
+  \end{block}
+\end{frame}
+
 \section{产品接入标准}
+
+\subsection{形成标准的动机}
+
+\begin{frame}{形成标准的动机}
+  \begin{block}{推动行业发展}
+    \begin{itemize}
+      \item {
+        POSIX, HTTP, TCP/IP, ...
+        \pause
+      }
+      \item {
+        技术部json数据标准：'... 接口的规范统一，会减少对接口格式学习的成本，以及接口错误处理的bug问题。'
+        \pause
+      }
+    \end{itemize}
+  \end{block}
+  \begin{block}{提供一个可复用的竞价基础平台}
+    \begin{itemize}
+    \item {对运维：提供相同的服务标准}
+    \item {对开发、QA：提供开发测试接入的依据}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\subsection{标准框架}
+
+\begin{frame}{标准框架}{竞价系统与业务系统的交互规范定义}
+  \begin{block}{竞价系统}
+    \begin{itemize}
+    \item {接收竞价产品输入的信息，形成能够支持产品竞价排名的数据}
+    \item {根据查询词，计算竞价排名结果}
+    \end{itemize}
+    \pause
+  \end{block}
+  \begin{block}{业务系统}
+    \begin{itemize}
+    \item {
+      实现产品接入所需的接口
+      \pause
+    }
+    \item {
+      依据标准定义的时序，通过消息与竞价系统完成竞价产品的状态同步
+      \pause
+    }
+    \item {
+      传递查询词参数，获取竞价排名和点击链接，按照自身的业务需要完成页面渲染
+    }
+    \end{itemize}
+  \end{block}
+\end{frame}
 
 % Placing a * after \section means it will not show in the
 % outline or table of contents.
-\section*{Summary}
+\section*{总结}
 
-\begin{frame}{Summary}
+\begin{frame}{总结}
   \begin{itemize}
-  \item
-    The \alert{first main message} of your talk in one or two lines.
-  \item
-    The \alert{second main message} of your talk in one or two lines.
-  \item
-    Perhaps a \alert{third message}, but not more than that.
-  \end{itemize}
-  
-  \begin{itemize}
-  \item
-    Outlook
-    \begin{itemize}
-    \item
-      Something you haven't solved.
-    \item
-      Something else you haven't solved.
-    \end{itemize}
+    \item {
+      合理复用：大大节约开发测试成本
+    }
+    \item {
+      跨业务的分布式系统不能假设对方接口100\%可用；短暂的不可用不能破坏系统的基本属性
+    }
+    \item {
+      形成标准供后来人参照，不断完善。
+    }
   \end{itemize}
 \end{frame}
-
 
 
 % All of the following is optional and typically not needed. 
-\appendix
-\section<presentation>*{\appendixname}
-\subsection<presentation>*{For Further Reading}
+%% \appendix
+%% \section<presentation>*{\appendixname}
+%% \subsection<presentation>*{For Further Reading}
 
-\begin{frame}[allowframebreaks]
-  \frametitle<presentation>{For Further Reading}
+%% \begin{frame}[allowframebreaks]
+%%   \frametitle<presentation>{For Further Reading}
     
-  \begin{thebibliography}{10}
+%%   \begin{thebibliography}{10}
     
-  \beamertemplatebookbibitems
-  % Start with overview books.
+%%   \beamertemplatebookbibitems
+%%   % Start with overview books.
 
-  \bibitem{Author1990}
-    A.~Author.
-    \newblock {\em Handbook of Everything}.
-    \newblock Some Press, 1990.
+%%   \bibitem{Author1990}
+%%     A.~Author.
+%%     \newblock {\em Handbook of Everything}.
+%%     \newblock Some Press, 1990.
  
     
-  \beamertemplatearticlebibitems
-  % Followed by interesting articles. Keep the list short. 
+%%   \beamertemplatearticlebibitems
+%%   % Followed by interesting articles. Keep the list short. 
 
-  \bibitem{Someone2000}
-    S.~Someone.
-    \newblock On this and that.
-    \newblock {\em Journal of This and That}, 2(1):50--100,
-    2000.
-  \end{thebibliography}
-\end{frame}
+%%   \bibitem{Someone2000}
+%%     S.~Someone.
+%%     \newblock On this and that.
+%%     \newblock {\em Journal of This and That}, 2(1):50--100,
+%%     2000.
+%%   \end{thebibliography}
+%% \end{frame}
 
 \clearpage
 \end{CJK}
