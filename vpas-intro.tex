@@ -275,7 +275,8 @@
 
 \begin{frame}{系统设计原则}
   \begin{block}{严格定义系统边界}
-    业务属性与竞价产品属性严格分离，产品竞价系统不能处理业务相关的逻辑
+    业务属性与竞价属性严格分离，互不处理对方的逻辑
+    \pause
   \end{block}
   \begin{block}{避免对功能稳定的部分做修改或者重新开发}
     \begin{itemize}
@@ -286,10 +287,28 @@
         回归测试代价高，容易拖慢整体上线进度
       }
     \end{itemize}
+    \pause
+  \end{block}
+  \begin{block}{简洁为美}
+    
   \end{block}
 \end{frame}
 
-\section{产品接入标准} 
+\subsection{关键设计}
+
+\begin{frame}{关键设计}
+  \begin{block}{保持数据同步}
+    \begin{itemize}
+      \item {
+        意义：保持竞价活力
+      }
+      \item {同步模型: Eventual Consistency}
+      \item {避免Race Condition: 带时间戳的消息队列}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{产品接入标准}
 
 % Placing a * after \section means it will not show in the
 % outline or table of contents.
