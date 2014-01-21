@@ -19,7 +19,7 @@
 \usepackage[T1]{fontenc}
 %\usepackage[utf8x]{inputenc}
 \usepackage{graphicx}
-
+\usepackage{url}
 
 % There are many different themes available for Beamer. A comprehensive
 % list with examples is given here:
@@ -416,6 +416,27 @@
       形成标准供后来人参照，不断完善。
     }
   \end{itemize}
+\end{frame}
+
+\appendix
+\section<presentation>*{\appendixname}
+\subsection<presentation>*{资料}
+
+\begin{frame}
+  \frametitle<presentation>{资料}
+    
+  \begin{thebibliography}{10}
+    
+  \beamertemplatearticlebibitems
+  % Followed by interesting articles. Keep the list short. 
+
+  \bibitem{STD-VPAS}
+    李庚、王冬、张辉等
+    \newblock {竞价排名系统接入标准}
+    \newblock {\url{http://wiki.corp.qunar.com/pages/viewpage.action?pageId=52070948}}
+  \end{thebibliography}
+
+  \beamertemplate
 \end{frame}
 
 
