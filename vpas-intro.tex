@@ -184,6 +184,15 @@
     产生日结算报表：综合考虑一天的点击情况和客户的在线情况，产生用户的消费数据，然后和一天的实时结算数据比对，产生平帐数据，给用户返款或者扣款
   }
   \end{itemize}
+  \pause
+  \begin{block}{扣款计算公式}
+    \[ f(n,q) = \left\{ 
+    \begin{array}{l l}
+      bp(q) & \quad \text{if $n$ is ranked last}\\
+      min(p(n+1,q)+c, p(n,q)) & \quad \text{otherwise}
+    \end{array} \right.\]
+    其中p(x,q)表示供应商对产品x在q这个竞价词上的出价, bp(q)表示竞价词q的底价，c是人为定义的一个常量
+  \end{block}
 \end{frame}
 
 % \subsection{Second Subsection}
