@@ -1,0 +1,58 @@
+%
+% intro.tex
+% 度假搜索业务模型简介
+
+
+\documentclass{article}
+
+\usepackage{CJKutf8}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools}
+
+\everymath{\displaystyle}
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+
+\title{度假搜索业务模型简介}
+\author{李庚}
+\date{\today}
+
+\bibliographystyle{plain}
+
+\maketitle
+\tableofcontents
+
+\section{度假部门业务概述}
+
+卖货：尽可能多的将供应商提供的旅游度假产品卖给使用网站的用户。部门的主要业绩衡量标准包括：
+
+\begin{itemize}
+  \item { GMV: Gross Merchandise Value，即交易额 }
+  \item { 毛利：$GMV - Cost$ }
+\end{itemize}
+
+
+GMV计算公式：
+
+\begin{equation}
+  GMV = \sum_{i \in S}{UV_i \times A_i \times R_i \times M_i}
+\end{equation}
+
+\begin{itemize}
+  \item { S: 访问渠道 }
+  \item { UV: 独立用户访问量 }
+  \item { A: 服务可用率 }
+  \item { R: 转化率 }
+  \item { M: 平均用户交易额 }
+\end{itemize}
+    
+
+\section{度假搜索在部门业务中的作用}
+
+帮助用户快速找到需要的产品。主要目标是提升我们度假频道的：$ UV, A, R $
+
+\bibliography{math}
+
+\clearpage
+\end{CJK}
+\end{document}
