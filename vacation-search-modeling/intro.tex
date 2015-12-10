@@ -1,19 +1,23 @@
 %
 % intro.tex
 % 度假搜索业务模型简介
+%
 
-
-\documentclass{article}
+\documentclass{report}
 
 \usepackage{CJKutf8}
 \usepackage[T1]{fontenc}
 \usepackage{mathtools}
+\usepackage{indentfirst}
 
 \everymath{\displaystyle}
+\pagestyle{headings}
+\pagenumbering{roman}
+
 \begin{document}
 \begin{CJK}{UTF8}{gbsn}
 
-\title{度假搜索业务模型简介}
+\title{度假搜索业务介绍}
 \author{李庚}
 \date{\today}
 
@@ -21,14 +25,15 @@
 
 \maketitle
 \tableofcontents
+\newpage
 
-\section{度假部门业务概述}
+\chapter{度假部门业务概述}
 
 卖货：尽可能多的将供应商提供的旅游度假产品卖给使用网站的用户。部门的主要业绩衡量标准包括：
 
 \begin{itemize}
   \item { GMV: Gross Merchandise Value，即交易额 }
-  \item { 毛利：$GMV - Cost$ }
+  \item { 毛利：$GMV - \text{成本} $ }
 \end{itemize}
 
 
@@ -42,18 +47,68 @@ GMV计算公式：
   \item { S: 访问渠道 }
   \item { UV: 独立用户访问量 }
   \item { A: 服务可用率 }
-  \item { R: 转化率 }
+  \item { R: 订单转化率 }
   \item { M: 平均用户交易额 }
 \end{itemize}
-    
 
-\section{度假搜索在部门业务中的作用}
+服务可用率：
+\begin{equation}
+  A_i = \frac{\text{满足性能要求的正确返回请求数}_i}{\text{全部请求数}_i}
+\end{equation}
+
+订单转化率：
+\begin{equation}
+  R_i = \frac{\text{订单量}_i}{\text{列表页访问量}_i} = \frac{\text{详情页访问量}_i}{\text{列表页访问量}_i} \times \frac{\text{订单量}_i}{\text{详情页访问量}_i}
+\end{equation}
+
+每个项目的目标一定要围绕提升上述某个指标，或者某几项指标的乘积。
+
+\chapter{度假搜索在部门业务中的作用}
 
 帮助用户快速找到需要的产品。主要目标是提升我们度假频道的这几个指标：$ UV, A, R $
 
 \section{度假搜索小组职能划分}
 
 
+
+需求类型对应的目标举例：
+
+\begin{itemize}
+  \item { SEO，流量运营: 提升 $ UV $ }
+  \item { 展示优化、相关产品推荐、信息抽取：提升 $ R $ }
+  \item { 后台性能优化、架构调整优化：提升 $ A $ }
+\end{itemize}
+
+\chapter{技术原则}
+
+\section{容错设计}
+
+外部故障是\emph{不可避免}的，且发生具有随机性。比如：硬件损坏、能源失效、网络连接中断等。我们在系统设计上能做的是，控制这些意外情况的发生对我们系统功能的影响范围和程度。即尽量保证：\emph{A}
+
+典型策略：
+
+\begin{itemize}
+  \item { 杜绝单点依赖 }
+  \item { 对外部访问要有恰当的异常处理 }
+\end{itemize}
+
+\section{测量效果}
+
+无论\emph{UV, A, R, M}都要有合理的测量标准。\emph{UV}，\emph{R}和\emph{M}的标准比较直观，\emph{A}的定义充分体现了两个方面的重要性：正确与性能。返回不正确结果与处理性能过差的请求都是影响可用性的。
+
+为了进行效果测量进行的工作：
+
+\begin{itemize}
+  \item { 抽取评测 }
+  \item { 转化率监控 }
+  \item { 报警监控 }
+\end{itemize}
+
+\section{快速试错}
+
+如果一项功能改动是否有用是无法预知的，必须发布到线上才能收到效果，那么为了避免错误的修改对线上产生过大的影响，我们需要尽快确认改动造成的影响是正向还是负向。
+
+采用方法：灰度发布 + AB对比测试，对比的指标是两个环境的单用户贡献\emph{GMV}值。
 
 \bibliography{math}
 
