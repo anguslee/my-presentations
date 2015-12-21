@@ -152,32 +152,30 @@
   \end{enumerate}
   \uncover<2-> {
     \begin{center}
-      \begin{scaletikzpicturetowidth}{\textwidth}
-        \begin{tikzpicture}[scale=0.75]
-          \begin{axis}[
-              title={产品规模随时间的演变趋势},
-              xlabel={年份},
-              ylabel={度假搜索覆盖的单品数量（万）},
-              xmin=2012, xmax=2015,
-              ymin=0, ymax=120,
-              xtick={2012,2013,2014,2015},
-              ytick={0,20,40,60,80,100,120},
-              legend pos=north west,
-              ymajorgrids=true,
-              grid style=dashed,
-            ]
-            
-            \addplot[
-              color=blue,
-              mark=square,
-            ]
-            coordinates {
-              (2012,10)(2013,29.5)(2014,59.5)(2015,108.4)
-            };
-            \legend{旅游度假产品}
-          \end{axis}
-        \end{tikzpicture}
-      \end{scaletikzpicturetowidth}
+      \begin{tikzpicture}[scale=0.75]
+        \begin{axis}[
+            title={产品规模随时间的演变趋势},
+            xlabel={年份},
+            ylabel={度假搜索覆盖的单品数量（万）},
+            xmin=2012, xmax=2015,
+            ymin=0, ymax=120,
+            xtick={2012,2013,2014,2015},
+            ytick={0,20,40,60,80,100,120},
+            legend pos=north west,
+            ymajorgrids=true,
+            grid style=dashed,
+          ]
+          
+          \addplot[
+            color=blue,
+            mark=square,
+          ]
+          coordinates {
+            (2012,10)(2013,29.5)(2014,59.5)(2015,108.4)
+          };
+          \legend{旅游度假产品}
+        \end{axis}
+      \end{tikzpicture}
     \end{center}
   }
 \end{frame}
