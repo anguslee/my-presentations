@@ -18,6 +18,12 @@
 \usepgfplotslibrary{external}
 \pgfplotsset{width=10cm,compat=1.9}
 
+%% \usepackage{tikz}
+%% \usepackage{verbatim}
+%% \usepackage[active,tightpage]{preview}
+%% \PreviewEnvironment{center}
+%% \setlength\PreviewBorder{10pt}
+
 \usetikzlibrary{shapes,arrows}
 
 \tikzexternalize
@@ -56,7 +62,93 @@
 %\usetheme{Szeged}
 \usetheme{Warsaw}
 
+%% \newcommand{chartnumproducts} {
+%% }
+
+\makeatletter
+\pgfdeclareshape{datastore}{
+  \inheritsavedanchors[from=rectangle]
+  \inheritanchorborder[from=rectangle]
+  \inheritanchor[from=rectangle]{center}
+  \inheritanchor[from=rectangle]{base}
+  \inheritanchor[from=rectangle]{north}
+  \inheritanchor[from=rectangle]{north east}
+  \inheritanchor[from=rectangle]{east}
+  \inheritanchor[from=rectangle]{south east}
+  \inheritanchor[from=rectangle]{south}
+  \inheritanchor[from=rectangle]{south west}
+  \inheritanchor[from=rectangle]{west}
+  \inheritanchor[from=rectangle]{north west}
+  \backgroundpath{
+    %  store lower right in xa/ya and upper right in xb/yb
+    \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya}}
+    \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@ya}}
+    \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@yb}}
+    \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yb}}
+ }
+}
+\makeatother
+
+
 \begin{document}
+
+\newcommand{\plotNumProductChart} {
+  \begin{tikzpicture}[scale=0.75]
+    \begin{axis}[
+        title={产品规模随时间的演变趋势},
+        xlabel={年份},
+        ylabel={度假搜索覆盖的单品数量（万）},
+        xmin=2012, xmax=2015,
+        ymin=0, ymax=120,
+        xtick={2012,2013,2014,2015},
+        ytick={0,20,40,60,80,100,120},
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+      ]
+      
+      \addplot[
+        color=blue,
+        mark=square,
+      ]
+      coordinates {
+        (2012,10)(2013,29.5)(2014,59.5)(2015,108.4)
+      };
+      \legend{旅游度假产品数}
+    \end{axis}
+  \end{tikzpicture}
+}
+
+\newcommand{\plotGMVGrowthChart} {
+  \begin{tikzpicture}[scale=0.75]
+    \begin{axis}[
+        title={GMV随时间的演变趋势},
+        xlabel={年份},
+        ylabel={日均GMV（万）},
+        xmin=2012, xmax=2015,
+        ymin=0, ymax=1200,
+        xtick={2012,2013,2014,2015},
+        ytick={0,200,400,600,800,1000,1200},
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+      ]
+      
+      \addplot[
+        color=blue,
+        mark=square,
+      ]
+      coordinates {
+        (2012,25)(2013,130)(2014,500)(2015,950)
+      };
+      \legend{旅游度假事业部日均GMV}
+    \end{axis}
+  \end{tikzpicture}
+}
+
+
 \begin{CJK}{UTF8}{gbsn}
 
 \title{度假搜索系统结构的演变}
@@ -152,32 +244,21 @@
   \end{enumerate}
   \uncover<2-> {
     \begin{center}
-      \begin{tikzpicture}[scale=0.75]
-        \begin{axis}[
-            title={产品规模随时间的演变趋势},
-            xlabel={年份},
-            ylabel={度假搜索覆盖的单品数量（万）},
-            xmin=2012, xmax=2015,
-            ymin=0, ymax=120,
-            xtick={2012,2013,2014,2015},
-            ytick={0,20,40,60,80,100,120},
-            legend pos=north west,
-            ymajorgrids=true,
-            grid style=dashed,
-          ]
-          
-          \addplot[
-            color=blue,
-            mark=square,
-          ]
-          coordinates {
-            (2012,10)(2013,29.5)(2014,59.5)(2015,108.4)
-          };
-          \legend{旅游度假产品}
-        \end{axis}
-      \end{tikzpicture}
+      \plotGMVGrowthChart
     \end{center}
   }
+\end{frame}
+
+
+\begin{frame}{搜索服务的质量的量化定义}
+  \begin{itemize}
+  \item { $$ GMV = \sum_{i \in S}{(UV_i \times A_i \times R_i \times M_i)} $$ }
+  \item { UV: 独立用户访问量 }
+  \item { \color{blue}{ A: 服务可用率 } }
+  \item { \color{blue}{ R: UV至订单转化率 } }
+  \item { M: 平均用户交易额 }
+  \item { S: 访问来源 }
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{搜索团队要应对的问题（续）}
@@ -192,18 +273,69 @@
   \end{enumerate}
 \end{frame}
 
-\begin{frame}{搜索在度假整体业务中的位置}
-  \begin{itemize}
-  \item { $$ GMV = \sum_{i \in S}{(UV_i \times A_i \times R_i \times M_i)} $$ }
-  \item { UV: 独立用户访问量 }
-  \item { \color{blue}{ A: 服务可用率 } }
-  \item { \color{blue}{ R: UV至订单转化率 } }
-  \item { M: 平均用户交易额 }
-  \item { S: 访问来源 }
-  \end{itemize}
-\end{frame}
 
 \section{系统演变过程}
+
+\begin{frame}{搜索系统技术结构}
+
+  \begin{center}
+    \begin{tikzpicture}[
+        font=\sffamily,
+        every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
+        source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
+        process/.style={draw,thick,circle,fill=blue!20},
+        sink/.style={source,fill=green!20},
+        datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
+        dots/.style={gray,scale=1},
+        to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+        every node/.style={align=center}]
+
+      % Position the nodes using a matrix layout
+      \matrix{
+        \node[source] (productsource) {旅游度假产品数据源}; \&
+        \node[process] (searchengine) {搜索引擎}; \&
+        \node[process] (webapi) {API接口}; \\
+
+        \node[process] (crawling) {抓取打包}; \& 
+        \node[datastore] (index) {倒排索引}; \&
+        \node[process] (mining) {数据挖掘}; \\
+
+        \node[datastore] (rawstorage) {产品原始数据}; \&
+        \node[process] (preprocess) {预处理}; \&
+        \node[datastore] (processedstorage) {服务数据}; \\
+      };
+
+      % Draw the arrows between the nodes and label them.
+      %% \draw[to] (hisparcbox) -- node[midway,above] {raw events}
+      %% node[midway,below] {level 0} (daq);
+      %% \draw[to] (daq) -- node[midway,right] {raw event data\\level 1} (buffer);
+      %% \draw[to] (buffer) --
+      %% node[midway,right] {raw event data\\level 1} (monitor);
+      %% \draw[to] (monitor) to[bend right=50] node[midway,above] {events}
+      %% node[midway,below] {level 1} (storage);
+      %% \draw[to] (storage) to[bend right=50] node[midway,above] {events}
+      %% node[midway,below] {level 1} (monitor);
+      %% \draw[to] (monitor) -- node[midway,above] {events}
+      %% node[midway,below] {level 1} (datastore);
+    \end{tikzpicture}
+\end{center}
+  
+\end{frame}
+
+\begin{frame}{搜索系统技术结构（续）}
+  \begin{block}{对外服务端}
+    \begin{itemize}
+    \item { WEB与API }
+    \item { 倒排索引 }
+    \end{itemize}
+  \end{block}
+  \begin{block}{后台处理}
+    \begin{itemize}
+    \item { 数据预处理 }
+    \item { 数据挖掘 }
+    \end{itemize}
+  \end{block}
+\end{frame}
 
 \begin{frame}{基本原则}
   \begin{enumerate}
@@ -227,100 +359,7 @@
   \end{enumerate}
 \end{frame}
 
-\begin{frame}{搜索系统结构划分}
-  \tikzset{%
-    block/.style    = {draw, thick, rectangle, minimum height = 1em,
-      minimum width = 1em},
-    sum/.style      = {draw, circle, node distance = 2cm}, % Adder
-    input/.style    = {coordinate}, % Input
-    output/.style   = {coordinate} % Output
-  }
-  % Defining string as labels of certain blocks.
-  \newcommand{\suma}{\Large$+$}
-  \newcommand{\inte}{$\displaystyle \int$}
-  \newcommand{\derv}{\huge$\frac{d}{dt}$}
 
-  \begin{tikzpicture}[auto, thick, node distance=1cm, >=triangle 45, scale=0.75]
-    \draw
-	% Drawing the blocks of first filter :
-	node at (0,0)[right=-3mm]{\Large \textopenbullet}
-	node [input, name=input1] {} 
-	node [sum, right of=input1] (suma1) {\suma}
-	node [block, right of=suma1] (inte1) {\inte}
-    node at (6.8,0)[block] (Q1) {\Large $Q_1$}
-    node [block, below of=inte1] (ret1) {\Large$T_1$};
-    % Joining blocks. 
-    % Commands \draw with options like [->] must be written individually
-	\draw[->](input1) -- node {$X(Z)$}(suma1);
- 	\draw[->](suma1) -- node {} (inte1);
-	\draw[->](inte1) -- node {} (Q1);
-	\draw[->](ret1) -| node[near end]{} (suma1);
-	% Adder
-    \draw
-	node at (5.4,-4) [sum, name=suma2] {\suma}
-    % Second stage of filter 
-	node at  (1,-6) [sum, name=suma3] {\suma}
-	node [block, right of=suma3] (inte2) {\inte}
-	node [sum, right of=inte2] (suma4) {\suma}
-	node [block, right of=suma4] (inte3) {\inte}
-	node [block, right of=inte3] (Q2) {\Large$Q_2$}
-	node at (9,-8) [block, name=ret2] {\Large$T_2$}
-    ;
-	% Joining the blocks of second filter
-	\draw[->] (suma3) -- node {} (inte2);
-	\draw[->] (inte2) -- node {} (suma4);
-	\draw[->] (suma4) -- node {} (inte3);
-	\draw[->] (inte3) -- node {} (Q2);
-	\draw[->] (ret2) -| (suma3);
-	\draw[->] (ret2) -| (suma4);
-    % Third stage of filter:
-	% Defining nodes:
-    \draw
-	node at (11.5, 0) [sum, name=suma5]{\suma}
-	node [output, right of=suma5]{}
-	node [block, below of=suma5] (deriv1){\derv}
-	node [output, right of=suma5] (sal2){}
-    ;
-	% Joining the blocks:
-	\draw[->] (suma2) -| node {}(suma3);
-	\draw[->] (Q1) -- (8,0) |- node {}(ret1);
-	\draw[->] (8,0) |- (suma2);
-	\draw[->] (5.4,0) -- (suma2);
-	\draw[->] (Q1) -- node {}(suma5);
-	\draw[->] (deriv1) -- node {}(suma5);
-	\draw[->] (Q2) -| node {}(deriv1);
-    \draw[<->] (ret2) -| node {}(deriv1);
-    \draw[->] (suma5) -- node {$Y(Z)$}(sal2);
-    % Drawing nodes with \textbullet
-    \draw
-	node at (8,0) {\textbullet} 
-	node at (8,-2){\textbullet}
-	node at (5.4,0){\textbullet}
-    node at (5,-8){\textbullet}
-    node at (11.5,-6){\textbullet}
-    ;
-	% Boxing and labelling noise shapers
-	\draw [color=gray,thick](-0.5,-3) rectangle (9,1);
-	\node at (-0.5,1) [above=5mm, right=0mm] {\textsc{first-order noise shaper}};
-	\draw [color=gray,thick](-0.5,-9) rectangle (12.5,-5);
-	\node at (-0.5,-9) [below=5mm, right=0mm] {\textsc{second-order noise shaper}};
-  \end{tikzpicture}  
-\end{frame}
-
-\begin{frame}{搜索系统结构划分（续）}
-  \begin{block}{对外服务端}
-    \begin{itemize}
-    \item { WEB与API }
-    \item { 倒排索引 }
-    \end{itemize}
-  \end{block}
-  \begin{block}{后台处理}
-    \begin{itemize}
-    \item { 数据预处理 }
-    \item { 数据挖掘 }
-    \end{itemize}
-  \end{block}
-\end{frame}
 
 \section{经验总结}
 
