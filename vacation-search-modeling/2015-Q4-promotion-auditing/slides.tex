@@ -94,8 +94,8 @@
 
 \begin{document}
 
-\newcommand{\plotNumProductChart} {
-  \begin{tikzpicture}[scale=0.75]
+\newcommand{\plotNumProductGrowthChart}[1][,] {
+  \begin{tikzpicture}[#1]
     \begin{axis}[
         title={产品规模随时间的演变趋势},
         xlabel={年份},
@@ -121,8 +121,8 @@
   \end{tikzpicture}
 }
 
-\newcommand{\plotGMVGrowthChart} {
-  \begin{tikzpicture}[scale=0.75]
+\newcommand{\plotGMVGrowthChart}[1][,] {
+  \begin{tikzpicture}[#1]
     \begin{axis}[
         title={GMV随时间的演变趋势},
         xlabel={年份},
@@ -154,7 +154,7 @@
 \title{度假搜索系统结构的演变}
 
 % A subtitle is optional and this may be deleted
-\subtitle{2015年Q4晋级答辩}
+\subtitle{2015年Q4述职}
 
 \author{李庚\inst{1}}
 % - Give the names in the same order as the appear in the paper.
@@ -193,7 +193,7 @@
     \column{0.6\textwidth}
     \begin{itemize}[1]
       \item<2-> 度假搜索系统技术Leader
-      \item<3-> QTalk Code Contributor, Emacs版QTalk开发者与维护者
+      \item<2-> QTalk Code Contributor, Emacs版QTalk开发者与维护者
     \end{itemize}
   \end{columns}  
 \end{frame}
@@ -244,15 +244,15 @@
   \end{enumerate}
   \uncover<2-> {
     \begin{center}
-      \plotGMVGrowthChart
+      \plotGMVGrowthChart[scale=0.75]
     \end{center}
   }
 \end{frame}
 
 
 \begin{frame}{搜索服务的质量的量化定义}
+  $$ GMV = \sum_{i \in S}{(UV_i \times A_i \times R_i \times M_i)} $$
   \begin{itemize}
-  \item { $$ GMV = \sum_{i \in S}{(UV_i \times A_i \times R_i \times M_i)} $$ }
   \item { UV: 独立用户访问量 }
   \item { \color{blue}{ A: 服务可用率 } }
   \item { \color{blue}{ R: UV至订单转化率 } }
@@ -266,8 +266,11 @@
   \item {
     应对不断变化的需求模式
     \begin{itemize}
-      \item { 前期：PC为主 }
-      \item { 目前：mobile为主 }
+      \item { PC需求为主 \ding{213} Mobile需求为主 }
+      \item { 单纯点击反馈排名 \ding{213} 竞价排名 }
+      \item { 依赖点击反馈的需求不断增加 }
+      \item { 粗放型 \ding{213} 集约型 }
+      \item { …… }
     \end{itemize}
   }
   \end{enumerate}
@@ -277,7 +280,6 @@
 \section{系统演变过程}
 
 \begin{frame}{搜索系统技术结构}
-
   \begin{center}
     \begin{tikzpicture}[
         font=\sffamily,
@@ -293,49 +295,172 @@
       % Position the nodes using a matrix layout
       \matrix{
         \node[source] (productsource) {旅游度假产品数据源}; \&
-        \node[process] (searchengine) {搜索引擎}; \&
-        \node[process] (webapi) {API接口}; \\
+        \node[datastore] (index) {倒排索引}; \&
+        \node[sink] (frontend) {度假搜索前端};  \\
 
         \node[process] (crawling) {抓取打包}; \& 
-        \node[datastore] (index) {倒排索引}; \&
-        \node[process] (mining) {数据挖掘}; \\
+        \node[process] (searchengine) {搜索引擎}; \&
+        \node[process] (webapi) {Web API\\搜索服务}; \\
 
         \node[datastore] (rawstorage) {产品原始数据}; \&
-        \node[process] (preprocess) {预处理}; \&
-        \node[datastore] (processedstorage) {服务数据}; \\
+        \node[process] (preprocess) {预处理、\\数据挖掘}; \&
+        \node[datastore] (processedstorage) {搜索服务数据}; \\
       };
 
       % Draw the arrows between the nodes and label them.
-      %% \draw[to] (hisparcbox) -- node[midway,above] {raw events}
-      %% node[midway,below] {level 0} (daq);
-      %% \draw[to] (daq) -- node[midway,right] {raw event data\\level 1} (buffer);
-      %% \draw[to] (buffer) --
-      %% node[midway,right] {raw event data\\level 1} (monitor);
-      %% \draw[to] (monitor) to[bend right=50] node[midway,above] {events}
-      %% node[midway,below] {level 1} (storage);
-      %% \draw[to] (storage) to[bend right=50] node[midway,above] {events}
-      %% node[midway,below] {level 1} (monitor);
-      %% \draw[to] (monitor) -- node[midway,above] {events}
-      %% node[midway,below] {level 1} (datastore);
+      \draw[to] (productsource) -- (crawling);
+      \draw[to] (crawling) -- (rawstorage);
+      \draw[to] (rawstorage) -- (preprocess);
+      \draw[to] (preprocess) -- (searchengine);
+      \draw[to] (searchengine) to[bend right=60] (index);
+      \draw[to] (index) to[bend right=60] (searchengine);
+      \draw[to] (searchengine) -- (webapi);
+      \draw[to] (webapi) -- (frontend);
+      \draw[to] (preprocess) to[bend right=40] (processedstorage);
+      \draw[to] (processedstorage) to[bend right=40] (preprocess);
+      \draw[to] (webapi) -- (processedstorage);
+      \draw[to] (processedstorage) -- (webapi);
     \end{tikzpicture}
-\end{center}
-  
+  \end{center}
 \end{frame}
 
 \begin{frame}{搜索系统技术结构（续）}
   \begin{block}{对外服务端}
     \begin{itemize}
-    \item { WEB与API }
-    \item { 倒排索引 }
+    \item { Web API搜索服务 }
+    \item { 搜索引擎 }
     \end{itemize}
   \end{block}
   \begin{block}{后台处理}
     \begin{itemize}
-    \item { 数据预处理 }
+    \item { 抓取打包 }
+    \item { 预处理 }
     \item { 数据挖掘 }
     \end{itemize}
   \end{block}
 \end{frame}
+
+\begin{frame}{技术结构上保证搜索服务的效率}
+  $$ GMV = \sum_{i \in S}{(UV_i \times {\color{blue}{A_i}} \times {\color{blue}{R_i}} \times M_i)} $$
+  \begin{columns}
+    \column{0.4\textwidth}
+    \begin{itemize}
+    \item {
+      对外服务：
+      \begin{enumerate}
+      \item { 高可用性（跨机房） }
+      \item { 低访问延时（无cache） }
+      \item { 横向扩展 }
+      \end{enumerate}
+    }
+    \item {
+      后台数据处理：
+      \begin{enumerate}
+      \item { 高吞吐率 }
+      \item { 数据更新及时 }
+      \end{enumerate}
+    }
+    \end{itemize}
+    \column{0.6\textwidth}
+    \plotNumProductGrowthChart[scale=0.6]
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Case Study: Web API搜索服务结构优化}
+  早期：可用性差，访问延时高；易出故障，维护成本高。
+    \begin{center}
+    \begin{tikzpicture}[
+        font=\sffamily,
+        every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
+        source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
+        process/.style={draw,thick,circle,fill=blue!20},
+        sink/.style={source,fill=green!20},
+        datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
+        dots/.style={gray,scale=1},
+        to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+        every node/.style={align=center},
+      ]
+
+      % Position the nodes using a matrix layout
+      \matrix{
+        \node[datastore] (index) {倒排索引(Lucene)}; \&
+        \node[sink] (frontend) {度假搜索前端};  \\
+
+        \node[process] (searchengine) {搜索引擎}; \&
+        \node[process] (webapi) {Web API\\搜索服务}; \\
+
+        \node[process] (preprocess) {预处理、\\数据挖掘}; \&
+        \node[datastore] (processedstorage) {搜索服务数据\\(RDBMS)}; \\
+      };
+
+      % Draw the arrows between the nodes and label them.
+      \draw[to] (preprocess) -- (searchengine);
+      \draw[to] (searchengine) to[bend right=60] (index);
+      \draw[to] (index) to[bend right=60] (searchengine);
+      \draw[to] (searchengine) -- (webapi);
+      \draw[to] (webapi) -- (frontend);
+      \draw[to] (preprocess) to[bend right=40] (processedstorage);
+      \draw[to] (processedstorage) to[bend right=40] (preprocess);
+      \draw[to] (webapi) -- (processedstorage);
+      \draw[to] (processedstorage) -- (webapi);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Case Study: Web API搜索服务结构优化（续）}
+  \begin{center}
+    \begin{tikzpicture}[
+        font=\sffamily,
+        every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
+        source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
+        process/.style={draw,thick,circle,fill=blue!20},
+        sink/.style={source,fill=green!20},
+        datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
+        dots/.style={gray,scale=1},
+        to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+        every node/.style={align=center},
+      ]
+
+      % Position the nodes using a matrix layout
+      \matrix{
+        \node[datastore] (index) {倒排索引(Lucene)}; \&
+        \node[sink] (frontend) {度假搜索前端};  \& \\
+
+        \node[process] (searchengine) {搜索引擎}; \&
+        \node[process] (webapi) {Web API\\搜索服务}; \& \\
+
+        \node[process] (preprocess) {预处理、\\数据挖掘}; \&
+        \node[datastore] (processedstorage) {RDBMS}; \&
+        \node[datastore] (kvengine) {Key-Value\\存储引擎}; \\
+      };
+
+      % Draw the arrows between the nodes and label them.
+      \draw[to] (preprocess) -- (searchengine);
+      \draw[to] (searchengine) to[bend right=60] (index);
+      \draw[to] (index) to[bend right=60] (searchengine);
+      \draw[to] (searchengine) -- (webapi);
+      \draw[to] (webapi) -- (frontend);
+      \draw[to] (preprocess) to[bend right=40] (processedstorage);
+      \draw[to] (processedstorage) to[bend right=40] (preprocess);
+      \draw[to] (preprocess) to[bend right=40] (kvengine);
+      \draw[to] (kvengine) to[bend left=40] (preprocess);
+      \draw[to] (webapi) -- (kvengine);
+      \draw[to] (kvengine) -- (webapi);
+      \draw[to] (processedstorage) -- (webapi);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{优化原则}
+  \begin{enumerate}
+  \item { 相对外部访问次数，API时间复杂度控制在O(1) }
+  \item { 牢记墨菲定律。从底层结构上保证无单点依赖，且能够横向扩展 }
+  \item { 不同的子系统之间在服务部署上分离，避免因竞争计算资源导致相互阻塞 }
+  \end{enumerate}
+\end{frame}
+
+
+\section{经验总结}
 
 \begin{frame}{基本原则}
   \begin{enumerate}
@@ -357,14 +482,6 @@
     测量结果，快速试错
   }
   \end{enumerate}
-\end{frame}
-
-
-
-\section{经验总结}
-
-\begin{frame}{产品的目的地如何获取？}
-  PlaceHolder
 \end{frame}
 
 
