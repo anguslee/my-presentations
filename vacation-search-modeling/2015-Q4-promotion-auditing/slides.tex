@@ -94,6 +94,33 @@
 
 \begin{document}
 
+\newcommand{\plotNumEngineerChart}[1][,] {
+  \begin{tikzpicture}[#1]
+    \begin{axis}[
+        title={团队开发成员数量变化},
+        xlabel={年份},
+        ylabel={团队开发成员数},
+        xmin=2012, xmax=2015,
+        ymin=0, ymax=20,
+        xtick={2012,2013,2014,2015},
+        ytick={0,5,10,15,20},
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+      ]
+      
+      \addplot[
+        color=blue,
+        mark=square,
+      ]
+      coordinates {
+        (2012,7)(2013,9)(2014,13)(2015,11)
+      };
+      \legend{度假搜索团队规模}
+    \end{axis}
+  \end{tikzpicture}
+}
+
 \newcommand{\plotNumProductGrowthChart}[1][,] {
   \begin{tikzpicture}[#1]
     \begin{axis}[
@@ -207,7 +234,7 @@
     \column{0.6\textwidth}
     \includegraphics[scale=0.15]{./images/pc-search-screenshot}
     \column{0.4\textwidth}
-    %% \includegraphics[scale=0.5]{./images/mobile-search-screenshot}
+    \includegraphics[scale=0.2]{./images/mobile-search-screenshot}
   \end{columns}
 \end{frame}
 
@@ -244,7 +271,7 @@
   \end{enumerate}
   \uncover<2-> {
     \begin{center}
-      \plotGMVGrowthChart[scale=0.75]
+      \plotGMVGrowthChart[scale=0.65]
     \end{center}
   }
 \end{frame}
@@ -256,7 +283,7 @@
   \item { UV: 独立用户访问量 }
   \item { \color{blue}{ A: 服务可用率 } }
   \item { \color{blue}{ R: UV至订单转化率 } }
-  \item { M: 平均用户交易额 }
+  \item { \color{blue}{ M: 平均用户交易额 } }
   \item { S: 访问来源 }
   \end{itemize}
 \end{frame}
@@ -277,7 +304,7 @@
 \end{frame}
 
 
-\section{系统演变过程}
+\section{系统演变与优化}
 
 \begin{frame}{搜索系统技术结构}
   \begin{center}
@@ -341,7 +368,7 @@
 \end{frame}
 
 \begin{frame}{技术结构上保证搜索服务的效率}
-  $$ GMV = \sum_{i \in S}{(UV_i \times {\color{blue}{A_i}} \times {\color{blue}{R_i}} \times M_i)} $$
+  $$ GMV = \sum_{i \in S}{(UV_i \times {\color{blue}{A_i}} \times {\color{blue}{R_i}} \times {\color{blue}{M_i}})} $$
   \begin{columns}
     \column{0.4\textwidth}
     \begin{itemize}
@@ -366,7 +393,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Case Study: Web API搜索服务结构优化}
+\begin{frame}{Case 1: Web API搜索服务结构优化}
   早期：可用性差，访问延时高；易出故障，维护成本高。
     \begin{center}
     \begin{tikzpicture}[
@@ -410,7 +437,7 @@
 \begin{frame}{优化原则}
   \begin{enumerate}
   \item { 相对外部IO访问次数，API时间复杂度控制在O(1) }
-  \item { 墨菲定律。从底层结构上保证无单点依赖，且能够横向扩展 }
+  \item { 尊重墨菲定律。从底层结构上保证无单点依赖，且能够横向扩展 }
   \item { 不同的子系统之间在服务部署上分离，避免因竞争计算资源导致相互阻塞 }
   \end{enumerate}
 \end{frame}
@@ -439,7 +466,7 @@
         \node[process] (webapi) {Web API\\搜索服务}; \&
         \node[datastore] (kvengine) {Cassandra\\分布式存储}; \\
 
-        \node[datastore] (offlinestorage) {离线数据\\RDBMS}; \&
+        \node[datastore] (offlinestorage) {离线数据\\RDBMS+REDIS}; \&
         \node[process] (preprocess) {预处理、\\数据挖掘}; \&
         \node[datastore] (processedstorage) {服务数据\\RDBMS}; \\
       };
@@ -465,11 +492,10 @@
 
 \begin{frame}{实现优化}
   \begin{itemize}
-    \item { Amdahl's Law: Make the common case fast }
+    \item { Amdahl's Law: Make the common case fast. }
+    \item { Do not reinvent the wheel. }
   \end{itemize}
 \end{frame}
-
-\section{经验总结}
 
 \begin{frame}{Case 2: 竞价排名的实现}
   \begin{center}
@@ -487,38 +513,140 @@
 
       % Position the nodes using a matrix layout
       \matrix{
-        \node<2->[datastore] (vpasdatastore) {竞价系统数据}; \&
+        \node[datastore] (vpasdatastore) {竞价系统数据}; \&
         \node[sink] (frontend) {度假搜索前端};  \& \\
 
-        \node<2->[process] (vpasapi) {竞价系统\\API}; \&
+        \node[process] (vpasapi) {竞价系统\\API}; \&
         \node[process] (webapi) {Web API\\搜索服务}; \& \\
 
         \node[process] (preprocess) {预处理}; \&
-        \&
+        \node<2->[process] (vpasadaptors) {竞价投放适配}; \&
         \\
       };
 
       % Draw the arrows between the nodes and label them.
       \draw<2->[to] (preprocess) -- (vpasapi);
-      \draw<2->[to] (vpasapi) to[bend right=40] (vpasdatastore);
-      \draw<2->[to] (vpasdatastore) to[bend right=40] (vpasapi);
+      \draw[to] (vpasapi) to[bend right=40] (vpasdatastore);
+      \draw[to] (vpasdatastore) to[bend right=40] (vpasapi);
       \draw<2->[to] (vpasapi) -- (webapi);
+      \draw<2->[to] (webapi) -- (vpasadaptors);
+      \draw<2->[to] (vpasadaptors) -- (vpasapi);
+      \draw<2->[to] (vpasadaptors) -- (preprocess);
       \draw[to] (webapi) -- (frontend);
     \end{tikzpicture}
   \end{center}
 \end{frame}
 
+\begin{frame}{When Low-Hanging Fruits Ran Out}
+  \begin{center}
+    \plotNumProductGrowthChart[scale=0.7]
+  \end{center}
+\end{frame}
+
+\begin{frame}{When Low-Hanging Fruits Ran Out}
+  \begin{center}
+    \plotGMVGrowthChart[scale=0.7]
+  \end{center}
+\end{frame}
+
+\begin{frame}{需求精细化}
+  \begin{itemize}
+  \item { 量化目标 }
+  \item { 细化评估方案 }
+  \item { 获取准确的评估结果 }
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Case 3: 小流量测试环境构建}
+  \begin{center}
+    \begin{tikzpicture}[
+        font=\sffamily,
+        every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
+        source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
+        process/.style={draw,thick,circle,fill=blue!20},
+        sink/.style={source,fill=green!20},
+        datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
+        dots/.style={gray,scale=1},
+        to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+        every node/.style={align=center},
+      ]
+
+      % Position the nodes using a matrix layout
+      \matrix{
+        \&
+        \node[sink] (pcfrontend) {度假搜索PC前端};  \&
+        \\
+
+        \node[process] (webapi) {Web API\\搜索服务}; \&
+        \node[datastore] (accessrecords) {用户行为日志}; \&
+        \node<2->[process] (uidhash) {UID \\Hash}; \\
+
+        \&
+        \node[sink] (mobilefrontend) {度假搜索Mobile前端}; \&
+        \\
+      };
+
+      % Draw the arrows between the nodes and label them.
+      \draw[to] (webapi) -- (pcfrontend);
+      \draw[to] (webapi) -- (mobilefrontend);
+      \draw<2->[to] (uidhash) -- (pcfrontend);
+      \draw<2->[to] (uidhash) -- (mobilefrontend);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Case 3: 小流量测试环境构建}
+  似易实难
+  \begin{itemize}
+    \item { 环境调试困难，涉及的合作方比较多：前端、数据统计、TTS交易系统、无线端等 }
+    \item { 统计、外投等环节难免不规范 }
+    \item { 获取评估结果的周期较长 }
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{硬币的另一面}
+  $ {\color{blue}{\text{毛利}}} = GMV - \color{blue}{\text{成本}} $
+  \begin{center}
+    \plotGMVGrowthChart[scale=0.6]
+  \end{center}
+\end{frame}
+
+\begin{frame}{成本：开发资源与计算资源}
+  \begin{center}
+    \plotNumEngineerChart[scale=0.7]
+  \end{center}
+\end{frame}
+
+\begin{frame}{合理的系统结构和小组划分是关键}
+  层次清晰，简洁为美
+  \begin{center}
+    \includegraphics[scale=0.17]{./images/team}
+  \end{center}
+\end{frame}
+
+\section{经验总结}
+
+\begin{frame}{搜索系统概况}
+  \begin{itemize}
+  \item { 团队成员数：11 }
+  \item { 支持日均GMV：950万 }
+  \item { 日均搜索PV：50万 }
+  \item { 日均搜索用户UV：25万 }
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{基本原则}
+  $$ GMV = \sum_{i \in S}{(UV_i \times A_i \times R_i \times M_i)} $$
   \begin{enumerate}
   \item {
-    量化目标
+    量化核心目标：
     \begin{itemize}
     \item<2-> { 产品需求：明确的量化指标和评测方法； }
     \item<2-> { 技术需求：制定监控目标，总结效果； }
     \end{itemize}
   }
   \item {
-    重视系统结构的效率
+    重视系统结构的效率，节约开发人日成本：
     \begin{itemize}
     \item<3-> { 降低故障和线上bug出现的可能性，使得团队多数时间在处理重要且不紧急的工作； }
     \item<3-> { 总结合适的设计模式快速满足常见需求； }
