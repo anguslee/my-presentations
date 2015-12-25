@@ -407,7 +407,16 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{Case Study: Web API搜索服务结构优化（续）}
+\begin{frame}{优化原则}
+  \begin{enumerate}
+  \item { 相对外部IO访问次数，API时间复杂度控制在O(1) }
+  \item { 墨菲定律。从底层结构上保证无单点依赖，且能够横向扩展 }
+  \item { 不同的子系统之间在服务部署上分离，避免因竞争计算资源导致相互阻塞 }
+  \end{enumerate}
+\end{frame}
+
+
+\begin{frame}{系统结构改进}
   \begin{center}
     \begin{tikzpicture}[
         font=\sffamily,
@@ -427,11 +436,12 @@
         \node[sink] (frontend) {度假搜索前端};  \& \\
 
         \node[process] (searchengine) {搜索引擎}; \&
-        \node[process] (webapi) {Web API\\搜索服务}; \& \\
+        \node[process] (webapi) {Web API\\搜索服务}; \&
+        \node[datastore] (kvengine) {Cassandra\\分布式存储}; \\
 
+        \node[datastore] (offlinestorage) {离线数据\\RDBMS}; \&
         \node[process] (preprocess) {预处理、\\数据挖掘}; \&
-        \node[datastore] (processedstorage) {RDBMS}; \&
-        \node[datastore] (kvengine) {Key-Value\\存储引擎}; \\
+        \node[datastore] (processedstorage) {服务数据\\RDBMS}; \\
       };
 
       % Draw the arrows between the nodes and label them.
@@ -440,10 +450,12 @@
       \draw[to] (index) to[bend right=60] (searchengine);
       \draw[to] (searchengine) -- (webapi);
       \draw[to] (webapi) -- (frontend);
-      \draw[to] (preprocess) to[bend right=40] (processedstorage);
-      \draw[to] (processedstorage) to[bend right=40] (preprocess);
-      \draw[to] (preprocess) to[bend right=40] (kvengine);
-      \draw[to] (kvengine) to[bend left=40] (preprocess);
+      \draw[to] (preprocess) -- (processedstorage);
+      % \draw[to] (processedstorage) to[bend right=40] (preprocess);
+      \draw[to] (preprocess) to[bend right=20] (offlinestorage);
+      \draw[to] (offlinestorage) to[bend right=20] (preprocess);
+      \draw[to] (preprocess) -- (kvengine);
+      \draw[to] (kvengine) -- (preprocess);
       \draw[to] (webapi) -- (kvengine);
       \draw[to] (kvengine) -- (webapi);
       \draw[to] (processedstorage) -- (webapi);
@@ -451,14 +463,11 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{优化原则}
-  \begin{enumerate}
-  \item { 相对外部访问次数，API时间复杂度控制在O(1) }
-  \item { 牢记墨菲定律。从底层结构上保证无单点依赖，且能够横向扩展 }
-  \item { 不同的子系统之间在服务部署上分离，避免因竞争计算资源导致相互阻塞 }
-  \end{enumerate}
+\begin{frame}{实现优化}
+  \begin{itemize}
+    \item { Amdahl's Law: Make the common case fast }
+  \end{itemize}
 \end{frame}
-
 
 \section{经验总结}
 
