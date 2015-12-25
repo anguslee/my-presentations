@@ -462,6 +462,43 @@
 
 \section{经验总结}
 
+\begin{frame}{Case 2: 竞价排名的实现}
+  \begin{center}
+    \begin{tikzpicture}[
+        font=\sffamily,
+        every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
+        source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
+        process/.style={draw,thick,circle,fill=blue!20},
+        sink/.style={source,fill=green!20},
+        datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
+        dots/.style={gray,scale=1},
+        to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+        every node/.style={align=center},
+      ]
+
+      % Position the nodes using a matrix layout
+      \matrix{
+        \node<2->[datastore] (vpasdatastore) {竞价系统数据}; \&
+        \node[sink] (frontend) {度假搜索前端};  \& \\
+
+        \node<2->[process] (vpasapi) {竞价系统\\API}; \&
+        \node[process] (webapi) {Web API\\搜索服务}; \& \\
+
+        \node[process] (preprocess) {预处理}; \&
+        \&
+        \\
+      };
+
+      % Draw the arrows between the nodes and label them.
+      \draw<2->[to] (preprocess) -- (vpasapi);
+      \draw<2->[to] (vpasapi) to[bend right=40] (vpasdatastore);
+      \draw<2->[to] (vpasdatastore) to[bend right=40] (vpasapi);
+      \draw<2->[to] (vpasapi) -- (webapi);
+      \draw[to] (webapi) -- (frontend);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 \begin{frame}{基本原则}
   \begin{enumerate}
   \item {
