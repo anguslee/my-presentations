@@ -98,10 +98,10 @@
       \uncover<4> {\includegraphics[scale=0.3]{./images/route-quality}}
     \end{center}
     \column{0.6\textwidth}
-    \begin{enumerate}[1]
-      \item<2> 支持的独立产品规模：60万 \ding{213} 100万+
-      \item<3> SEO初见成效：百度日均带来18k独立用户访问
-      \item<4> 数据抽取质量评测形成规范流程
+    \begin{enumerate}\setcounter{enumi}{0}
+      \item<2-> 支持的独立产品规模：60万 \ding{213} 100万+
+      \item<3-> SEO初见成效：百度日均带来18k独立用户访问
+      \item<4-> 数据抽取质量评测形成规范流程
     \end{enumerate}
   \end{columns}
 \end{frame}
@@ -111,11 +111,11 @@
     \column{0.4\textwidth}
     \begin{center}
       \begin{minipage}[b]{1\textwidth}
-        \uncover<2> {
+        \uncover<1-2> {
           \includegraphics[scale=0.2]{./images/dep-recommend}\\
           \includegraphics[scale=0.2]{./images/dest-recommend}
         }
-        \uncover<4> {
+        \uncover<3> {
           \includegraphics[scale=0.4]{./images/a}\\
           \includegraphics[scale=0.4]{./images/b}
         }
@@ -123,9 +123,9 @@
     \end{center}
     \column{0.6\textwidth}
     \begin{enumerate}\setcounter{enumi}{3}
-      \item<2> 搜索相关推荐算法使用范围推广：出发地、目的地推荐、详情页相关产品推荐
-      \item<3> Qsearch基础依赖升级：Lucene 3 \ding{213} Lucene 4
-      \item<4> 小流量测试环境投入使用
+      \item<1-> 搜索相关推荐算法使用范围推广：出发地、目的地推荐、详情页相关产品推荐
+      \item<2-> Qsearch基础依赖升级：Lucene 3 \ding{213} Lucene 4
+      \item<3-> 小流量测试环境投入使用
     \end{enumerate}
   \end{columns}
 \end{frame}
@@ -163,7 +163,7 @@
 
 \end{frame}
 
-\begin{frame}{GMV量化分析方法（续）}
+\begin{frame}{GMV量化分析方法}
 
 \begin{itemize}
   \item {
@@ -189,6 +189,31 @@
   }
 \end{itemize}
 
+\end{frame}
+
+\begin{frame}{GMV计算举例}
+  $$  \text{来源}S = \text{上海}-\text{三亚} $$
+  \uncover<2-> {
+    $$  UV_{\text{上海}-\text{三亚}} = 1000 $$
+  }
+  \uncover<3-> {
+    $$  A_{\text{上海}-\text{三亚}} = \frac{23.5}{24} $$
+  }
+  \uncover<4-> {
+    $$  R_{\text{上海}-\text{三亚}} = \frac{9}{10} \times \frac{2}{100} $$
+  }
+  \uncover<5-> {
+    $$  M_{\text{上海}-\text{三亚}} = CNY 3500 $$
+  }
+\end{frame}
+
+\begin{frame}{GMV计算举例}
+    $$
+    \begin{aligned}
+      GMV_{\text{上海}-\text{三亚}} &= 1000 \times \frac{23.5}{24} \times \frac{18}{1000} \times CNY 3500 \\
+      &= CNY 61687.5
+    \end{aligned}
+    $$
 \end{frame}
 
 \section{搜索与频道团队职责}
@@ -233,28 +258,32 @@
 
 \begin{frame}{技术原则}
 
-每个项目的目标一定要围绕提升上述某个指标，或者某几项指标的乘积。同时降低成本：开发时间，硬件资源等等
+  每个项目的目标一定要围绕提升上述某个指标，或者某几项指标的乘积。
 
-\uncover<2->{
-  \begin{itemize}
-    \item {容错设计}
-    \item {关注结果}
-    \item {快速试错}
-  \end{itemize}
-}
+  同时降低成本：开发时间，硬件资源等等
+
+  \uncover<2->{
+    \begin{itemize}
+      \item {容错设计}
+      \item {关注结果}
+      \item {快速试错}
+    \end{itemize}
+  }
 
 \end{frame}
 
 \begin{frame}{容错设计}
 
-外部故障是不可避免的，且发生具有随机性。比如：硬件损坏、能源失效、网络连接中断等。我们在系统设计上能做的是，控制这些意外情况的发生对我们系统功能的影响范围和程度。
+  外部故障是不可避免的，且发生具有随机性。比如：硬件损坏、能源失效、网络连接中断等。
 
-典型策略：
+  我们要思考：如何控制这些意外情况对我们系统功能的影响程度。
 
-\begin{itemize}
-  \item { 杜绝单点依赖 }
-  \item { 对外部访问要有恰当的异常处理 }
-\end{itemize}
+  典型策略：
+
+  \begin{itemize}
+    \item { 杜绝单点依赖 }
+    \item { 对外部资源的访问要有恰当的异常处理 }
+  \end{itemize}
 
 \end{frame}
 
@@ -262,7 +291,7 @@
 \begin{frame}{关注结果}
 
 \begin{itemize}
-  \item { 抽取评测 }
+  \item { 抽取质量评测 }
   \item { 转化率监控 }
   \item { 报警监控 }
 \end{itemize}
@@ -273,21 +302,19 @@
 
 如果一项功能改动是否有用是无法预知的，必须发布到线上才能收到效果，那么为了避免错误的修改对线上产生过大的影响，我们需要尽快确认改动造成的影响是正向还是负向。
 
-采用方法：灰度发布 + AB对比测试
-
 \end{frame}
 
-\begin{frame}{2015下半年的要求}
+\begin{frame}{成为更优秀的技术工作者}
 
   牢记事业部的业绩指标：
   $$  GMV = \sum_{i \in S}{(UV_i \times A_i \times R_i \times M_i)} $$
 
   做项目的时候多思考和总结：\\ 
-  开始前确定量化目标，结束后评估结果
+  开始前确定量化目标，结束后评估结果。
 
 \end{frame}
 
-\begin{frame}{2015下半年的要求}
+\begin{frame}{成为更优秀的技术工作者}
 
   把握技术原则：
   \begin{itemize}
