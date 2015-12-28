@@ -574,23 +574,18 @@
       % Position the nodes using a matrix layout
       \matrix{
         \&
-        \node[sink] (pcfrontend) {度假搜索PC前端};  \&
-        \\
+        \node[sink] (frontend) {度假搜索前端};  \& \\
 
-        \node[process] (webapi) {Web API\\搜索服务}; \&
-        \node[datastore] (accessrecords) {用户行为日志}; \&
-        \node<2->[process] (uidhash) {UID \\Hash}; \\
+         \& \node[process] (webapi) {Web API\\搜索服务};
+         \& \node<2->[process] (uidhash) {UID \\Hash}; \\
 
-        \&
-        \node[sink] (mobilefrontend) {度假搜索Mobile前端}; \&
-        \\
+        \node<2->[datastore] (accessrecords) {用户行为日志\\（原始）}; \&
+        \node<2->[datastore] (accessrecords) {用户行为日志\\（对照）}; \\
       };
 
       % Draw the arrows between the nodes and label them.
-      \draw[to] (webapi) -- (pcfrontend);
-      \draw[to] (webapi) -- (mobilefrontend);
-      \draw<2->[to] (uidhash) -- (pcfrontend);
-      \draw<2->[to] (uidhash) -- (mobilefrontend);
+      \draw[to] (webapi) -- (frontend);
+      \draw<2->[to] (uidhash) -- (frontend);
     \end{tikzpicture}
   \end{center}
 \end{frame}
