@@ -178,10 +178,10 @@
 
 \begin{CJK}{UTF8}{gbsn}
 
-\title{度假搜索系统结构的演变}
+\title{度假搜索系统的构建－原则与经验}
 
 % A subtitle is optional and this may be deleted
-\subtitle{2015年Q4述职}
+\subtitle{2016年Q2晋级述职答辩}
 
 \author{李庚\inst{1}}
 % - Give the names in the same order as the appear in the paper.
@@ -227,7 +227,7 @@
 
 \begin{frame}{自我介绍（续）}
   \begin{itemize}
-  \item {度假搜索系统技术Leader \& 产品需求规划}
+  \item {度假搜索系统技术Leader \& 搜索系统产品需求规划}
   \end{itemize}
   \vspace{3 mm}
   \begin{columns}
@@ -269,11 +269,11 @@
   \begin{enumerate}
     \item { 随着业务量的膨胀，搜索服务的质量和效率不能降低 }
   \end{enumerate}
-  \uncover<2-> {
+  %% \uncover<2-> {
     \begin{center}
       \plotGMVGrowthChart[scale=0.65]
     \end{center}
-  }
+  %%}
 \end{frame}
 
 
@@ -293,11 +293,8 @@
   \item {
     应对不断变化的需求模式
     \begin{itemize}
-      \item { PC需求为主 \ding{213} Mobile需求为主 }
       \item { 单纯点击反馈排名 \ding{213} 竞价排名 }
-      \item { 依赖点击反馈的需求不断增加 }
-      \item { 粗放型 \ding{213} 集约型 }
-      \item { …… }
+      \item { 重视规模 \ding{213} 重视效果 }
     \end{itemize}
   }
   \end{enumerate}
@@ -305,6 +302,13 @@
 
 
 \section{系统演变与优化}
+
+\begin{frame}{系统设计原则}
+  \begin{enumerate}
+    \item {可用性保障：选择适合的技术实现不同的系统组成部分}
+    \item {性能保障：API百ms级，产品更新处理分钟级，挖掘计算小时级}
+  \end{enumerate}
+\end{frame}
 
 \begin{frame}{搜索系统技术结构}
   \begin{center}
@@ -439,6 +443,7 @@
   \item { 相对外部IO访问次数，API时间复杂度控制在O(1) }
   \item { 尊重墨菲定律。从底层结构上保证无单点依赖，且能够横向扩展 }
   \item { 不同的子系统之间在服务部署上分离，避免因竞争计算资源导致相互阻塞 }
+  \item { 将保险机制内建入接口设计中：过期数据优于空结果，降低P1故障发生几率 }
   \end{enumerate}
 \end{frame}
 
@@ -490,14 +495,14 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{实现优化}
+\begin{frame}{功能实现原则}
   \begin{itemize}
     \item { Amdahl's Law: Make the common case fast. }
     \item { Do not reinvent the wheel. }
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Case 2: 竞价排名的实现}
+\begin{frame}{Case 2: 竞价排名系统结构的简化}
   \begin{center}
     \begin{tikzpicture}[
         font=\sffamily,
@@ -514,27 +519,36 @@
       % Position the nodes using a matrix layout
       \matrix{
         \node[datastore] (vpasdatastore) {竞价系统数据}; \&
-        \node[sink] (frontend) {度假搜索前端};  \& \\
+        \node[process] (searchengine) {搜索引擎};  \& \\
 
         \node[process] (vpasapi) {竞价系统\\API}; \&
-        \node[process] (webapi) {Web API\\搜索服务}; \& \\
+        \node[process] (webapi) {Web API\\搜索服务}; \&
+        \node[sink] (frontend) {度假搜索前端}; \& \\
 
         \node[process] (preprocess) {预处理}; \&
-        \node<2->[process] (vpasadaptors) {竞价投放适配}; \&
+        \node[process] (vpasadaptors) {竞价投放适配}; \&
         \\
       };
 
       % Draw the arrows between the nodes and label them.
-      \draw<2->[to] (preprocess) -- (vpasapi);
+      \draw[to] (searchengine) -- (webapi);
+      \draw[to] (preprocess) -- (vpasapi);
       \draw[to] (vpasapi) to[bend right=40] (vpasdatastore);
       \draw[to] (vpasdatastore) to[bend right=40] (vpasapi);
-      \draw<2->[to] (vpasapi) -- (webapi);
-      \draw<2->[to] (webapi) -- (vpasadaptors);
-      \draw<2->[to] (vpasadaptors) -- (vpasapi);
-      \draw<2->[to] (vpasadaptors) -- (preprocess);
+      \draw[to] (vpasapi) -- (webapi);
+      \draw[to] (webapi) -- (vpasadaptors);
+      \draw[to] (vpasadaptors) -- (vpasapi);
+      \draw[to] (vpasadaptors) -- (preprocess);
       \draw[to] (webapi) -- (frontend);
     \end{tikzpicture}
   \end{center}
+\end{frame}
+
+\begin{frame}{简化带来的好处}
+  \begin{itemize}
+  \item {减少调用层级}
+  \item {竞价产品保持与搜索、筛选相同的逻辑，易于维护}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{When Low-Hanging Fruits Ran Out}
@@ -549,15 +563,31 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{需求精细化}
+\begin{frame}{需求精细化：度量一切}
   \begin{itemize}
-  \item { 量化目标 }
-  \item { 细化评估方案 }
-  \item { 获取准确的评估结果 }
+  \item { 接口的访问量与响应时间 }
+  \item { 用户的行为：转化率，点击分布等等 }
+  \item { 用户的意向追踪：qchat聊天记录分析 }
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Case 3: 小流量测试环境构建}
+\begin{frame}{Case 3: 倒排索引系统的内存使用优化}
+  \begin{itemize}
+    \item {搜索排序数据占用越来越多的内存}
+    \item {平均响应时间较好，但FGC发生时搜索API平均响应时间急剧恶化}
+    \item {优化：写入外存，利用操作系统的Page Cache保证访问性能}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Case 4: UV维度s-d转化率优化（进行中）}
+  \begin{itemize}
+  \item {搜索来源分析}
+  \item {用户行为分布情况分析}
+  \item {反馈数据迅速体现在推荐导航中}
+  \end {itemize}
+\end{frame}
+
+\begin{frame}{Case 5: 小流量测试环境构建}
   \begin{center}
     \begin{tikzpicture}[
         font=\sffamily,
@@ -577,23 +607,23 @@
         \node[sink] (frontend) {度假搜索前端};  \& \\
 
          \& \node[process] (webapi) {Web API\\搜索服务};
-         \& \node<2->[process] (uidhash) {UID \\Hash}; \\
+         \& \node[process] (uidhash) {UID \\Hash}; \\
 
-        \node<2->[datastore] (accessrecords) {用户行为日志\\（原始）}; \&
-        \node<2->[datastore] (accessrecords) {用户行为日志\\（对照）}; \\
+        \node[datastore] (accessrecords) {用户行为日志\\（原始）}; \&
+        \node[datastore] (accessrecords) {用户行为日志\\（对照）}; \\
       };
 
       % Draw the arrows between the nodes and label them.
       \draw[to] (webapi) -- (frontend);
-      \draw<2->[to] (uidhash) -- (frontend);
+      \draw[to] (uidhash) -- (frontend);
     \end{tikzpicture}
   \end{center}
 \end{frame}
 
-\begin{frame}{Case 3: 小流量测试环境构建}
+\begin{frame}{Case 5: 小流量测试环境构建}
   似易实难
   \begin{itemize}
-    \item { 环境调试困难，涉及的合作方比较多：前端、数据统计、TTS交易系统、无线端等 }
+    \item { 环境调试困难，涉及的合作方比较多：前端、数据统计、交易系统、无线端等 }
     \item { 统计、外投等环节难免不规范 }
     \item { 获取评估结果的周期较长 }
   \end{itemize}
@@ -612,12 +642,6 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{合理的系统结构和小组划分是关键}
-  层次清晰，简洁为美
-  \begin{center}
-    \includegraphics[scale=0.17]{./images/team}
-  \end{center}
-\end{frame}
 
 \section{经验总结}
 
@@ -636,15 +660,15 @@
   \item {
     量化核心目标：
     \begin{itemize}
-    \item<2-> { 产品需求：明确的量化指标和评测方法； }
-    \item<2-> { 技术需求：制定监控目标，总结效果； }
+    \item { 产品需求：明确的量化指标和评测方法； }
+    \item { 技术需求：制定监控目标，总结效果； }
     \end{itemize}
   }
   \item {
     重视系统结构的效率，节约开发人日成本：
     \begin{itemize}
-    \item<3-> { 降低故障和线上bug出现的可能性，使得团队多数时间在处理重要且不紧急的工作； }
-    \item<3-> { 总结合适的设计模式快速满足常见需求； }
+    \item { 好的结构能够降低故障和线上bug出现的可能性，使得团队多数时间在处理重要且不紧急的工作； }
+    \item { 总结合适的设计模式快速满足常见需求； }
     \end{itemize}
   }
   \item {
