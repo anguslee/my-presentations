@@ -526,7 +526,7 @@
         \node[sink] (frontend) {度假搜索前端}; \& \\
 
         \node[process] (preprocess) {预处理}; \&
-        \node[process] (vpasadaptors) {竞价投放适配}; \&
+        \node[process] (vpasadaptors) {竞价投放}; \&
         \\
       };
 
@@ -543,6 +543,47 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+
+\begin{frame}{Case 2: 竞价排名系统结构的简化}
+  \begin{center}
+    \begin{tikzpicture}[
+        font=\sffamily,
+        every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
+        source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
+        process/.style={draw,thick,circle,fill=blue!20},
+        sink/.style={source,fill=green!20},
+        datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
+        dots/.style={gray,scale=1},
+        to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+        every node/.style={align=center},
+      ]
+
+      % Position the nodes using a matrix layout
+      \matrix{
+        \node[datastore] (vpasdatastore) {竞价系统数据\\倒排索引数据}; \&
+        \node[process] (searchengine) {搜索引擎};  \& \\
+
+        \&
+        \node[process] (webapi) {竞价/Web\\API}; \&
+        \node[sink] (frontend) {度假搜索前端}; \& \\
+
+        \node[process] (preprocess) {预处理}; \&
+        \node[process] (vpasadaptors) {竞价投放}; \&
+        \\
+      };
+
+      % Draw the arrows between the nodes and label them.
+      \draw[to] (searchengine) -- (webapi);
+      \draw[to] (webapi) -- (vpasadaptors);
+      \draw[to] (vpasadaptors) -- (vpasdatastore);
+      \draw[to] (vpasdatastore) -- (searchengine);
+      \draw[to] (vpasadaptors) -- (preprocess);
+      \draw[to] (preprocess) -- (vpasdatastore);
+      \draw[to] (webapi) -- (frontend);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 
 \begin{frame}{简化带来的好处}
   \begin{itemize}
@@ -577,6 +618,15 @@
     \item {平均响应时间较好，但FGC发生时搜索API平均响应时间急剧恶化}
     \item {优化：写入外存，利用操作系统的Page Cache保证访问性能}
   \end{itemize}
+  \uncover<2-> {
+    \begin{center}
+      \includegraphics[scale=0.3]{./images/searchengine-fullgc}
+    \end{center}
+    \begin{itemize}
+      \item {响应时间：150ms降低到60ms，波动趋于稳定}
+      %% {http://cerberus.corp.qunar.com/full_new_metric.htm?appCode=vs_vacation_api&name=query_qsearch_time}
+    \end{itemize}
+  }
 \end{frame}
 
 \begin{frame}{Case 4: UV维度s-d转化率优化（进行中）}
@@ -585,6 +635,11 @@
   \item {用户行为分布情况分析}
   \item {反馈数据迅速体现在推荐导航中}
   \end {itemize}
+  \uncover<2-> {
+    \begin{center}
+      \includegraphics[scale=0.6]{./images/brexit-hit}
+    \end{center}
+  }
 \end{frame}
 
 \begin{frame}{Case 5: 小流量测试环境构建}
@@ -629,6 +684,9 @@
   \end{itemize}
 \end{frame}
 
+
+\section{经验总结}
+
 \begin{frame}{硬币的另一面}
   $ {\color{blue}{\text{毛利}}} = GMV - \color{blue}{\text{成本}} $
   \begin{center}
@@ -643,14 +701,12 @@
 \end{frame}
 
 
-\section{经验总结}
-
 \begin{frame}{搜索系统概况}
   \begin{itemize}
-  \item { 团队成员数：11 }
+  \item { 团队成员数：10 }
   \item { 支持日均GMV：950万 }
-  \item { 日均搜索PV：50万 }
-  \item { 日均搜索用户UV：25万 }
+  \item { 日均搜索PV：150万 }
+  \item { 日均搜索用户UV：15万 }
   \end{itemize}
 \end{frame}
 
@@ -677,6 +733,14 @@
   \end{enumerate}
 \end{frame}
 
+\begin{frame}{带团队常见问题}
+  \begin{itemize}
+    \item {技术规范意识不足}
+    \item {统一的数据平台缺乏}
+    \item {沟通成本较高}
+    \item {完成任务不等于获得了好的结果}
+  \end{itemize}
+\end{frame}
 
 \end{CJK}
 \end{document}
