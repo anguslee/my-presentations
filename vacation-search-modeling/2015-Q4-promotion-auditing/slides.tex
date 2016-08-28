@@ -1,8 +1,8 @@
-\documentclass[handout]{beamer}
+\documentclass{beamer}
 % Replace the \documentclass declaration above
 % with the following two lines to typeset your 
 % lecture notes as a handout:
-%\documentclass{article}
+%\documentclass[handout]{beamer}
 \usepackage{CJKutf8}
 \usepackage[T1]{fontenc}
 %\usepackage[utf8x]{inputenc}
@@ -206,6 +206,14 @@
   \end{frame}
 }
 
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{纲要}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
 \begin{frame}
   \titlepage
 \end{frame}
@@ -219,8 +227,8 @@
     \end{itemize}
     \column{0.6\textwidth}
     \begin{itemize}[1]
-      \item<2-> 度假搜索系统技术Leader
-      \item<2-> QTalk Code Contributor, Emacs版QTalk开发者与维护者
+      \item 度假搜索系统技术Leader
+      \item QTalk Code Contributor, Emacs版QTalk开发者与维护者
     \end{itemize}
   \end{columns}  
 \end{frame}
@@ -265,7 +273,19 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{搜索团队要应对的问题}
+\begin{frame}{搜索系统概况}
+  \begin{itemize}
+  \item { 独立产品数：120万 }
+  \item { 支持日均GMV：950万 }
+  \item { 日均搜索PV：150万 }
+  \item { 日均搜索用户UV：15万 }
+  \end{itemize}
+\end{frame}
+
+
+\section{工作核心原则与方法}
+
+\begin{frame}{如何做到？}
   \begin{enumerate}
     \item { 随着业务量的膨胀，搜索服务的质量和效率不能降低 }
   \end{enumerate}
@@ -276,35 +296,11 @@
   %%}
 \end{frame}
 
-
-\begin{frame}{搜索服务的质量的量化定义}
-  $$ GMV = \sum_{i \in S}{(UV_i \times A_i \times R_i \times M_i)} $$
-  \begin{itemize}
-  \item { UV: 独立用户访问量 }
-  \item { \color{blue}{ A: 服务可用率 } }
-  \item { \color{blue}{ R: UV至订单转化率 } }
-  \item { \color{blue}{ M: 平均用户交易额 } }
-  \item { S: 访问来源 }
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{搜索团队要应对的问题（续）}
-  \begin{enumerate}\setcounter{enumi}{1}
-  \item {
-    应对不断变化的需求模式
-    \begin{itemize}
-      \item { 单纯点击反馈排名 \ding{213} 竞价排名 }
-      \item { 重视规模 \ding{213} 重视效果 }
-    \end{itemize}
-  }
-  \end{enumerate}
-\end{frame}
-
-
-\section{系统演变与优化}
+\subsection{高效支持业务需求}
 
 \begin{frame}{系统设计原则}
   \begin{enumerate}
+    \item {目标：快速响应需求，降低故障概率}
     \item {可用性保障：选择适合的技术实现不同的系统组成部分}
     \item {性能保障：API百ms级，产品更新处理分钟级，挖掘计算小时级}
   \end{enumerate}
@@ -372,7 +368,7 @@
 \end{frame}
 
 \begin{frame}{技术结构上保证搜索服务的效率}
-  $$ GMV = \sum_{i \in S}{(UV_i \times {\color{blue}{A_i}} \times {\color{blue}{R_i}} \times {\color{blue}{M_i}})} $$
+  %% $$ GMV = \sum_{i \in S}{(UV_i \times {\color{blue}{A_i}} \times {\color{blue}{R_i}} \times {\color{blue}{M_i}})} $$
   \begin{columns}
     \column{0.4\textwidth}
     \begin{itemize}
@@ -495,100 +491,17 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{功能实现原则}
+
+\subsection{抓住搜索服务的本质}
+
+\begin{frame}{搜索服务的质量的量化定义}
+  $$ GMV = \sum_{i \in S}{(UV_i \times A_i \times R_i \times M_i)} $$
   \begin{itemize}
-    \item { Amdahl's Law: Make the common case fast. }
-    \item { Do not reinvent the wheel. }
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Case 2: 竞价排名系统结构的简化}
-  \begin{center}
-    \begin{tikzpicture}[
-        font=\sffamily,
-        every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
-        source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
-        process/.style={draw,thick,circle,fill=blue!20},
-        sink/.style={source,fill=green!20},
-        datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
-        dots/.style={gray,scale=1},
-        to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
-        every node/.style={align=center},
-      ]
-
-      % Position the nodes using a matrix layout
-      \matrix{
-        \node[datastore] (vpasdatastore) {竞价系统数据}; \&
-        \node[process] (searchengine) {搜索引擎};  \& \\
-
-        \node[process] (vpasapi) {竞价系统\\API}; \&
-        \node[process] (webapi) {Web API\\搜索服务}; \&
-        \node[sink] (frontend) {度假搜索前端}; \& \\
-
-        \node[process] (preprocess) {预处理}; \&
-        \node[process] (vpasadaptors) {竞价投放}; \&
-        \\
-      };
-
-      % Draw the arrows between the nodes and label them.
-      \draw[to] (searchengine) -- (webapi);
-      \draw[to] (preprocess) -- (vpasapi);
-      \draw[to] (vpasapi) to[bend right=40] (vpasdatastore);
-      \draw[to] (vpasdatastore) to[bend right=40] (vpasapi);
-      \draw[to] (vpasapi) -- (webapi);
-      \draw[to] (webapi) -- (vpasadaptors);
-      \draw[to] (vpasadaptors) -- (vpasapi);
-      \draw[to] (vpasadaptors) -- (preprocess);
-      \draw[to] (webapi) -- (frontend);
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
-
-\begin{frame}{Case 2: 竞价排名系统结构的简化}
-  \begin{center}
-    \begin{tikzpicture}[
-        font=\sffamily,
-        every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
-        source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
-        process/.style={draw,thick,circle,fill=blue!20},
-        sink/.style={source,fill=green!20},
-        datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
-        dots/.style={gray,scale=1},
-        to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
-        every node/.style={align=center},
-      ]
-
-      % Position the nodes using a matrix layout
-      \matrix{
-        \node[datastore] (vpasdatastore) {竞价系统数据\\倒排索引数据}; \&
-        \node[process] (searchengine) {搜索引擎};  \& \\
-
-        \&
-        \node[process] (webapi) {竞价/Web\\API}; \&
-        \node[sink] (frontend) {度假搜索前端}; \& \\
-
-        \node[process] (preprocess) {预处理}; \&
-        \node[process] (vpasadaptors) {竞价投放}; \&
-        \\
-      };
-
-      % Draw the arrows between the nodes and label them.
-      \draw[to] (searchengine) -- (webapi);
-      \draw[to] (webapi) -- (vpasadaptors);
-      \draw[to] (vpasadaptors) -- (vpasdatastore);
-      \draw[to] (vpasdatastore) -- (searchengine);
-      \draw[to] (vpasadaptors) -- (preprocess);
-      \draw[to] (preprocess) -- (vpasdatastore);
-      \draw[to] (webapi) -- (frontend);
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
-
-
-\begin{frame}{简化带来的好处}
-  \begin{itemize}
-  \item {减少调用层级}
-  \item {竞价产品保持与搜索、筛选相同的逻辑，易于维护}
+  \item { UV: 独立用户访问量 }
+  \item { \color{blue}{ A: 服务可用率 } }
+  \item { \color{blue}{ R: UV至订单转化率 } }
+  \item { \color{blue}{ M: 平均用户交易额 } }
+  \item { S: 访问来源 }
   \end{itemize}
 \end{frame}
 
@@ -612,24 +525,24 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Case 3: 倒排索引系统的内存使用优化}
+\begin{frame}{Case 2: 倒排索引系统的内存使用优化}
   \begin{itemize}
     \item {搜索排序数据占用越来越多的内存}
     \item {平均响应时间较好，但FGC发生时搜索API平均响应时间急剧恶化}
     \item {优化：写入外存，利用操作系统的Page Cache保证访问性能}
   \end{itemize}
-  \uncover<2-> {
-    \begin{center}
-      \includegraphics[scale=0.3]{./images/searchengine-fullgc}
-    \end{center}
-    \begin{itemize}
-      \item {响应时间：150ms \ding{213} 60ms，波动趋于稳定}
-      %% {http://cerberus.corp.qunar.com/full_new_metric.htm?appCode=vs_vacation_api&name=query_qsearch_time}
-    \end{itemize}
-  }
+  %% \uncover<2-> {
+  \begin{center}
+    \includegraphics[scale=0.3]{./images/searchengine-fullgc}
+  \end{center}
+  \begin{itemize}
+  \item {响应时间：150ms \ding{213} 60ms，波动趋于稳定}
+    %% {http://cerberus.corp.qunar.com/full_new_metric.htm?appCode=vs_vacation_api&name=query_qsearch_time}
+  \end{itemize}
+  %% }
 \end{frame}
 
-\begin{frame}{Case 4: UV维度s-d转化率优化（进行中）}
+\begin{frame}{Case 3: UV维度s-d转化率优化（进行中）}
   \begin{itemize}
   \item {搜索来源分析}
   \item {用户行为分布情况分析}
@@ -640,7 +553,7 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{Case 5: 小流量测试环境构建}
+\begin{frame}{Case 4: 小流量测试环境构建}
   \begin{center}
     \begin{tikzpicture}[
         font=\sffamily,
@@ -673,17 +586,27 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{Case 5: 小流量测试环境构建}
-  似易实难
+%% \begin{frame}{Case 5: 小流量测试环境构建}
+%%   似易实难
+%%   \begin{itemize}
+%%     \item { 环境调试困难，涉及的合作方比较多：前端、数据统计、交易系统、无线端等 }
+%%     \item { 统计、外投等环节难免不规范 }
+%%     \item { 获取评估结果的周期较长 }
+%%   \end{itemize}
+%% \end{frame}
+
+
+\subsection{形成规范的开发流程体系}
+
+\begin{frame}{重视需求Review}
   \begin{itemize}
-    \item { 环境调试困难，涉及的合作方比较多：前端、数据统计、交易系统、无线端等 }
-    \item { 统计、外投等环节难免不规范 }
-    \item { 获取评估结果的周期较长 }
+  \item {目标}
+  \item {依据}
+  \item {结果度量方法}
   \end{itemize}
 \end{frame}
 
-
-\section{经验总结}
+\subsection{保持团队稳定}
 
 \begin{frame}{硬币的另一面}
   $ {\color{blue}{\text{毛利}}} = GMV - \color{blue}{\text{成本}} $
@@ -699,14 +622,121 @@
 \end{frame}
 
 
-\begin{frame}{搜索系统概况}
-  \begin{itemize}
-  \item { 团队成员数：10 }
-  \item { 支持日均GMV：950万 }
-  \item { 日均搜索PV：150万 }
-  \item { 日均搜索用户UV：15万 }
-  \end{itemize}
-\end{frame}
+%% \begin{frame}{搜索团队要应对的问题（续）}
+%%   \begin{enumerate}\setcounter{enumi}{1}
+%%   \item {
+%%     应对不断变化的需求模式
+%%     \begin{itemize}
+%%       \item { 单纯点击反馈排名 \ding{213} 竞价排名 }
+%%       \item { 重视规模 \ding{213} 重视效果 }
+%%     \end{itemize}
+%%   }
+%%   \end{enumerate}
+%% \end{frame}
+
+
+
+%% \begin{frame}{功能实现原则}
+%%   \begin{itemize}
+%%     \item { Amdahl's Law: Make the common case fast. }
+%%     \item { Do not reinvent the wheel. }
+%%   \end{itemize}
+%% \end{frame}
+
+%% \begin{frame}{Case 2: 竞价排名系统结构的简化}
+%%   \begin{center}
+%%     \begin{tikzpicture}[
+%%         font=\sffamily,
+%%         every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
+%%         source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
+%%         process/.style={draw,thick,circle,fill=blue!20},
+%%         sink/.style={source,fill=green!20},
+%%         datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
+%%         dots/.style={gray,scale=1},
+%%         to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+%%         every node/.style={align=center},
+%%       ]
+
+%%       % Position the nodes using a matrix layout
+%%       \matrix{
+%%         \node[datastore] (vpasdatastore) {竞价系统数据}; \&
+%%         \node[process] (searchengine) {搜索引擎};  \& \\
+
+%%         \node[process] (vpasapi) {竞价系统\\API}; \&
+%%         \node[process] (webapi) {Web API\\搜索服务}; \&
+%%         \node[sink] (frontend) {度假搜索前端}; \& \\
+
+%%         \node[process] (preprocess) {预处理}; \&
+%%         \node[process] (vpasadaptors) {竞价投放}; \&
+%%         \\
+%%       };
+
+%%       % Draw the arrows between the nodes and label them.
+%%       \draw[to] (searchengine) -- (webapi);
+%%       \draw[to] (preprocess) -- (vpasapi);
+%%       \draw[to] (vpasapi) to[bend right=40] (vpasdatastore);
+%%       \draw[to] (vpasdatastore) to[bend right=40] (vpasapi);
+%%       \draw[to] (vpasapi) -- (webapi);
+%%       \draw[to] (webapi) -- (vpasadaptors);
+%%       \draw[to] (vpasadaptors) -- (vpasapi);
+%%       \draw[to] (vpasadaptors) -- (preprocess);
+%%       \draw[to] (webapi) -- (frontend);
+%%     \end{tikzpicture}
+%%   \end{center}
+%% \end{frame}
+
+%% \begin{frame}{Case 2: 竞价排名系统结构的简化}
+%%   \begin{center}
+%%     \begin{tikzpicture}[
+%%         font=\sffamily,
+%%         every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=.3cm},
+%%         source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.1cm},
+%%         process/.style={draw,thick,circle,fill=blue!20},
+%%         sink/.style={source,fill=green!20},
+%%         datastore/.style={draw,very thick,shape=datastore,inner sep=.1cm},
+%%         dots/.style={gray,scale=1},
+%%         to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+%%         every node/.style={align=center},
+%%       ]
+
+%%       % Position the nodes using a matrix layout
+%%       \matrix{
+%%         \node[datastore] (vpasdatastore) {竞价系统数据\\倒排索引数据}; \&
+%%         \node[process] (searchengine) {搜索引擎};  \& \\
+
+%%         \&
+%%         \node[process] (webapi) {竞价/Web\\API}; \&
+%%         \node[sink] (frontend) {度假搜索前端}; \& \\
+
+%%         \node[process] (preprocess) {预处理}; \&
+%%         \node[process] (vpasadaptors) {竞价投放}; \&
+%%         \\
+%%       };
+
+%%       % Draw the arrows between the nodes and label them.
+%%       \draw[to] (searchengine) -- (webapi);
+%%       \draw[to] (webapi) -- (vpasadaptors);
+%%       \draw[to] (vpasadaptors) -- (vpasdatastore);
+%%       \draw[to] (vpasdatastore) -- (searchengine);
+%%       \draw[to] (vpasadaptors) -- (preprocess);
+%%       \draw[to] (preprocess) -- (vpasdatastore);
+%%       \draw[to] (webapi) -- (frontend);
+%%     \end{tikzpicture}
+%%   \end{center}
+%% \end{frame}
+
+
+%% \begin{frame}{简化带来的好处}
+%%   \begin{itemize}
+%%   \item {减少调用层级}
+%%   \item {竞价产品保持与搜索、筛选相同的逻辑，易于维护}
+%%   \end{itemize}
+%% \end{frame}
+
+
+
+\section{经验总结}
+
 
 \begin{frame}{基本原则}
   $$ GMV = \sum_{i \in S}{(UV_i \times A_i \times R_i \times M_i)} $$
@@ -735,7 +765,6 @@
   \begin{itemize}
     \item {技术规范意识不足}
     \item {统一的数据平台缺乏}
-    \item {沟通成本较高}
     \item {完成任务不等于获得了好的结果}
   \end{itemize}
 \end{frame}
