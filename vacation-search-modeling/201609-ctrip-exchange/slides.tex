@@ -1,0 +1,178 @@
+\documentclass{beamer}
+% Replace the \documentclass declaration above
+% with the following two lines to typeset your 
+% lecture notes as a handout:
+%\documentclass[handout]{beamer}
+\usepackage{CJKutf8}
+\usepackage[T1]{fontenc}
+%\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{url}
+\usepackage{pifont}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+
+\usepgfplotslibrary{external}
+\pgfplotsset{width=10cm,compat=1.9}
+
+%% \usepackage{tikz}
+%% \usepackage{verbatim}
+%% \usepackage[active,tightpage]{preview}
+%% \PreviewEnvironment{center}
+%% \setlength\PreviewBorder{10pt}
+
+\usetikzlibrary{shapes,arrows}
+
+\tikzexternalize
+\everymath{\displaystyle}
+
+% There are many different themes available for Beamer. A comprehensive
+% list with examples is given here:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+% You can uncomment the themes below if you would like to use a different
+% one:
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{boxes}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{default}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+\usetheme{Warsaw}
+
+%% \newcommand{chartnumproducts} {
+%% }
+
+
+
+\begin{document}
+
+\begin{CJK}{UTF8}{gbsn}
+
+\title{度假搜索排序与系统监控简介}
+
+% A subtitle is optional and this may be deleted
+% \subtitle{}
+
+\author{李庚\inst{1}}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[Qunar.com] % (optional, but mostly needed)
+{
+  \inst{1}
+  旅游度假事业部－搜索及频道 \\
+  Qunar.com
+}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date{\today}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{纲要}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{纲要}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{纲要}
+  \tableofcontents
+\end{frame}
+
+\section{搜索排序基本原理简介}
+
+\begin{frame}{参与排序主要因素}
+  \begin{itemize}
+    \item {行为反馈}
+    \item {产品质量}
+    \item {供应商评级}
+  \end{itemize}
+  \begin{block}{对于产品r，其在查询词q上的排序计算公式为：}
+    $$ score_{q,r} = a \times \text{行为反馈}_{q,r} + b \times \text{产品质量} + c \times \text{供应商评级} $$
+  \end{block}
+\end{frame}
+
+\begin{frame}{用户行为反馈}
+  \begin{itemize}
+  \item {奖励转化率高产品：L-D, D-P等因素}
+  \item {惩罚有了展示之后无转化产品}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{产品本身质量}
+  \begin{block}{原则：用户关注的出行信息是否完整}
+    \begin{itemize}
+    \item {费用相关：票是否含税；是否有低价钓鱼行为等}
+    \item {产品图片：不能缺失}
+    \item {信息准确，自身不能前后矛盾}
+    \end{itemize}
+  \end{block}
+  
+\end{frame}
+
+\begin{frame}{供应商评级}
+  \begin{itemize}
+  \item {投诉率}
+  \item {电话接通率，在线客服应答率}
+  \item {支付率，销售金额}
+  \item {新供应商或者新产品会有一定的加分}
+  \end {itemize}
+\end{frame}
+
+\section{系统监控的原则简介}
+
+\begin{frame}{监控的目的：避免灾难性的失效}
+  \begin{itemize}
+  \item {对于不同系统，“失效”的标准不同}
+  \item {失效的原因很可能十分复杂，没有单一的root cause}
+  \item {亡羊补牢，为时已晚}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{原则：变监控为度量}
+  \begin{itemize}
+  \item {技术层面：服务响应时间，可用性，硬件报警状况，操作系统负载等}
+  \item {业务层面：转化率，流量，交易额等}
+  \item {不要忽视被度量指标的任何一次突变}
+  \end{itemize}
+\end{frame}
+
+\end{CJK}
+
+\end{document}
