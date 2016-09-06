@@ -157,11 +157,19 @@
 
 \section{系统监控的原则简介}
 
-\begin{frame}{监控的目的：避免灾难性的失效}
+\begin{frame}{监控的目的：及早发现异常，避免灾难性的失效}
   \begin{itemize}
   \item {对于不同系统，“失效”的标准不同}
-  \item {失效的原因很可能十分复杂，没有单一的root cause}
+  \item {失效的原因很可能十分复杂，一般不可重复。也没有单一的root cause}
   \item {亡羊补牢，为时已晚}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{从失效中学习：合理的设计是前提}
+  \begin{itemize}
+  \item {保证最普遍的应用场景在需求演化过程中不失效。}
+  \item {不断的消除性能瓶颈，必要时大胆重构。成功重构的代价远小于不断的打补丁。}
+  \item {不宜过度与业务场景结合，开发监控程序本身的成本不可忽视。}
   \end{itemize}
 \end{frame}
 
