@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 % Replace the \documentclass declaration above
 % with the following two lines to typeset your 
 % lecture notes as a handout:
@@ -111,9 +111,9 @@
   \titlepage
 \end{frame}
 
-\begin{frame}{纲要}
-  \tableofcontents
-\end{frame}
+%% \begin{frame}{纲要}
+%%   \tableofcontents
+%% \end{frame}
 
 \section{搜索排序基本原理简介}
 
@@ -123,8 +123,8 @@
     \item {产品质量}
     \item {供应商评级}
   \end{itemize}
-  \begin{block}{对于产品r，其在查询词q上的排序计算公式为：}
-    $$ score_{q,r} = a \times \text{行为反馈}_{q,r} + b \times \text{产品质量} + c \times \text{供应商评级} $$
+  \begin{block}<2->{对于产品r，其在查询词q上的排序计算公式为：}
+    $$ score_{q,r} = a \times {\color{blue}{\text{行为反馈}_{q,r}}} + b \times {\color{blue}{\text{产品质量}}} + c \times {\color{blue}{\text{供应商评级}}} $$
   \end{block}
 \end{frame}
 
@@ -153,32 +153,68 @@
   \item {支付率，销售金额}
   \item {新供应商或者新产品会有一定的加分}
   \end {itemize}
+  \begin{block}<2->{供应商QChat客服沟通监控点}
+    \begin{itemize}
+    \item {直接统计：客服的回复率，尤其是\emph{及时回复率}}
+    \item {语义分析：通过分析会话session中的关键词发现疑似投诉、用户的主要需求点等}
+    \end{itemize}
+  \end{block}
 \end{frame}
+
 
 \section{系统监控的原则简介}
 
-\begin{frame}{监控的目的：及早发现异常，避免灾难性的失效}
-  \begin{itemize}
-  \item {对于不同系统，“失效”的标准不同}
-  \item {失效的原因很可能十分复杂，一般不可重复。也没有单一的root cause}
-  \item {亡羊补牢，为时已晚}
-  \end{itemize}
+\begin{frame}{为什么要做监控？}
+  % \frametitle<presentation>{推荐阅读}
+  我们维护的技术系统复不复杂？一旦失效了怎么办？
+  \begin{thebibliography}{10}
+    
+  \beamertemplatearticlebibitems
+  % Followed by interesting articles. Keep the list short. 
+
+  \bibitem{hcsf}
+    Richard I. Cook
+    \newblock {How Complex Systems Fail}
+    \newblock \url{http://web.mit.edu/2.75/resources/random/How\%20Complex\%20Systems\%20Fail.pdf}
+
+  \end{thebibliography}
+
+  \beamertemplate
+
+  \begin{block}<2->{\emph {灾难性失效}的特性}
+    \begin{enumerate}
+    \item<2> {\emph{可靠性}很难度量，只能度量\emph{不可靠}。}
+    \item<3> {失效的\emph{风险一定存在}，尤其对于快速迭代演变的系统。}
+    \item<4-> {失效的原因一般十分复杂，且很少具有可重复性，也\emph{没有单一的root cause.}}
+    \item<5-> {亡羊补牢，为时已晚。即事后的补救措施对将来的意义不一定很大。}
+    \end{enumerate}
+  \end{block}
+
 \end{frame}
 
-\begin{frame}{从失效中学习：合理的设计是前提}
-  \begin{itemize}
-  \item {保证最普遍的应用场景在需求演化过程中不失效。}
-  \item {不断的消除性能瓶颈，必要时大胆重构。成功重构的代价远小于不断的打补丁。}
-  \item {不宜过度与业务场景结合，开发监控程序本身的成本不可忽视。}
-  \end{itemize}
+\begin{frame}{监控的目的：及早发现异常，避免\emph {灾难性}的失效}
+  \begin{block}{思路与方法}
+    \begin{itemize}
+    \item {合理的技术架构设计}
+    \item {重视指标的度量}
+    \end{itemize}
+  \end{block}
 \end{frame}
 
-\begin{frame}{原则：变监控为度量}
-  \begin{itemize}
-  \item {技术层面：服务响应时间，可用性，硬件报警状况，操作系统负载等}
-  \item {业务层面：转化率，流量，交易额等}
-  \item {不要忽视被度量指标的任何一次突变}
-  \end{itemize}
+\begin{frame}{合理的技术架构设计是前提}
+  \begin{enumerate}
+  \item<1-> {保证最普遍的应用场景在需求演化过程中不失效。}
+  \item<2-> {不断的消除性能瓶颈，必要时大胆重构。成功重构的代价远小于不断的打补丁。}
+  \item<3-> {监控不宜过度与业务场景结合，业务需求的正确性由开发上线的流程保证而非通过监控保证。}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{重视指标的度量是基础}
+  \begin{enumerate}
+  \item<1-> {技术层面：\emph{分服务}统计响应时间，可用性，硬件报警状况，操作系统负载等。}
+  \item<2-> {业务层面：\emph{分渠道}统计转化率，流量，交易额等。}
+  \item<3-> {不要忽视度量指标的任何一次\emph{突变}。}
+  \end{enumerate}
 \end{frame}
 
 \end{CJK}
