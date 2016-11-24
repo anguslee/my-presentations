@@ -1,0 +1,242 @@
+\documentclass{beamer}
+% Replace the \documentclass declaration above
+% with the following two lines to typeset your 
+% lecture notes as a handout:
+%\documentclass[handout]{beamer}
+\usepackage{CJKutf8}
+\usepackage[T1]{fontenc}
+%\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{url}
+\usepackage{pifont}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+
+\usepgfplotslibrary{external}
+\pgfplotsset{width=10cm,compat=1.9}
+
+%% \usepackage{tikz}
+%% \usepackage{verbatim}
+%% \usepackage[active,tightpage]{preview}
+%% \PreviewEnvironment{center}
+%% \setlength\PreviewBorder{10pt}
+
+\usetikzlibrary{shapes,arrows}
+
+\tikzexternalize
+\everymath{\displaystyle}
+
+% There are many different themes available for Beamer. A comprehensive
+% list with examples is given here:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+% You can uncomment the themes below if you would like to use a different
+% one:
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{boxes}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{default}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+\usetheme{Warsaw}
+
+%% \newcommand{chartnumproducts} {
+%% }
+
+
+
+\begin{document}
+
+\begin{CJK}{UTF8}{gbsn}
+
+\title{度假搜索的自动化推荐}
+
+% A subtitle is optional and this may be deleted
+\subtitle{基本原理与应用}
+
+\author{李庚\inst{1}}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[Qunar.com] % (optional, but mostly needed)
+{
+  \inst{1}
+  旅游度假事业部－搜索及频道 \\
+  Qunar.com
+}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date{\today}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{纲要}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{纲要}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%% \begin{frame}{纲要}
+%%   \tableofcontents
+%% \end{frame}
+
+\section{为什么需要推荐？}
+
+\begin{frame}{业绩需要}
+  \begin{itemize}
+    \item {用户访问量：合理的推荐可以尽可能吸引用户}
+    \item {用户到订单转化率}
+    \item {平均用户交易额：推荐搭售产品}
+  \end{itemize}  
+\end{frame}
+
+\section{如何评判推荐结果的质量？}
+
+\begin{frame}{推荐方法的多样性}
+  \begin{itemize}
+  \item {基于行业经验：首页单品推荐位，排序置顶}
+  \item {基于计算机算法：根据历史反馈数据决定值得推荐的内容}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{方法质量评价标准}
+  \begin{itemize}
+    \item {成本是否合理}
+    \item {\emph{能够带来多少实际的用户到订单转化}}
+  \end{itemize}
+\end{frame}
+
+\section{技术概要}
+
+
+\begin{frame}{合理的推荐建立在什么基础上？}
+  \begin{itemize}
+  \item {知己：明确自己的优质内容的范围}
+  \item {知彼：了解用户的需要}
+  \item {推荐方法：将符合用户需要的优质内容给用户看}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{人工推荐方法示例}
+  \begin{itemize}
+  \item {运营同学根据行业经验并结合产品近期的售出情况选出可以推荐的产品池P}
+  \item {在页面的某个固定位置，挑选产品池P中的部分产品按照一定的顺序排列出来}
+  \end{itemize}
+  \begin{block}<2->{此方法背后的原理}
+    \begin{itemize}
+    \item {优质内容：人工选择}
+    \item {不同用户的需要：标准一致，由确定的挑选方法决定}
+    \item {方法：排列的先后次序决定了与用户偏好的相关性}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+
+\begin{frame}{基于经验的推荐有哪些缺点}
+  \begin{itemize}
+    \item {成本：持续投入；}
+    \item {转化：依赖个人能力，结果不稳定；}
+    \item {难以满足不同的需求偏好}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{技术手段推荐}
+  \begin{block}{可标准化的考虑因素：通过计算机程序，综合量化指标计算可推荐性}
+    \begin{itemize}
+    \item {转化率}
+    \item {供应商好评率，qchat及时回复率}
+    \item {....}
+    \end{itemize}
+  \end{block}
+  \begin{block}{未知或不易标准化的因素：挖掘用户行为进行个性化推荐}
+    \begin{itemize}
+      \item {协同过滤}
+      \item {特征匹配}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{协同过滤}
+  给偏好相似的一组用户推荐他们共同关注的内容
+
+  $$ A \rightarrow x, B \rightarrow x $$
+  $$ A \rightarrow y, C \rightarrow z $$
+  $$ B \Leftarrow {\color{blue}{y}},z ?$$
+
+  假设：A和B偏好x因为x具备某些A和B共同看重的要素（\emph{特征}）
+  
+\end{frame}
+
+\begin{frame}{特征匹配}
+
+  $$ A \rightarrow x, B \rightarrow x $$
+  $$ A \rightarrow y, C \rightarrow z $$
+  $$ B \Leftarrow {\color{blue}{y}},z ?$$
+
+  \begin{itemize}
+  \item { A和B具有共同偏好特征$ {\alpha} $ }
+  \item { 产品x具有特征 $ {\beta} $ }
+  \item { 具有 $ {\alpha} $ 特征的人偏爱具备 $ {\beta} $ 特征的产品 }
+  \item { 产品y也具有特征 $ {\beta} $ }
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{应用}
+  \begin{itemize}
+  \item {热词导航}
+  \item {列表页横插推荐}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{效果评估}
+  \begin{block}{成本}
+    一劳永逸
+  \end{block}
+
+  \begin{block}{带来的转化}
+  \end{block}
+
+\end{frame}
+
+
+\end{CJK}
+
+\end{document}
