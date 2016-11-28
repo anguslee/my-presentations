@@ -220,11 +220,29 @@
 
 \begin{frame}{特征匹配度计算方法}
   \begin{itemize}
-    \item { $ U=\text{度假用户集合}, P=\text{度假产品集合}, $ }
-    \item { $ W_{u,p}=\text{用户u对产品p的偏好程度}(u \in U, p \in P) $ }
-    \item { $ u=(u_1, u_2, \dots , u_m), u \in U $ }
-    \item { $ p=(p_1, p_2, \dots , p_n), p \in P $ }
-    \item { $ \text{特征相关性}C_{u_x,p_y} = \sum_{u \in U, p \in P}{\frac{W_{u,p}}{|u| \times |p|}}$ }
+    \item { $ \text{令}U=\text{度假用户集合}, P=\text{度假产品集合}, $ }
+    \item {
+      通过行为反馈计算用户u对产品p的偏好程度
+      \begin{itemize}
+        \item {
+          $ W_{u,p}, (u \in U, p \in P) $
+        }
+      \end{itemize}
+    }
+    \item {
+      将产品和用户表示成他们的特征：
+      \begin{itemize}
+      \item { $ u=(u_1, u_2, \dots , u_m), u \in U $ }
+      \item { $ p=(p_1, p_2, \dots , p_n), p \in P $ }
+      \end{itemize}
+    }
+    \item {
+      特征之间的相关性：
+      \begin{itemize}
+        \item { $ C_{u_x,p_y} = \sum_{u \in U, p \in P}{\frac{W_{u,p}}{|u| \times |p|}}$ }
+      \end{itemize}
+    } 
+    
   \end{itemize}
 \end{frame}
 
