@@ -74,7 +74,7 @@
 \title{度假搜索的自动化推荐}
 
 % A subtitle is optional and this may be deleted
-\subtitle{基本原理与应用}
+\subtitle{实践与初步效果}
 
 \author{李庚\inst{1}}
 % - Give the names in the same order as the appear in the paper.
@@ -115,34 +115,14 @@
 %%   \tableofcontents
 %% \end{frame}
 
-\section{为什么需要推荐？}
+\section{技术原理回顾}
 
-\begin{frame}{业绩需要}
-  \begin{itemize}
-    \item {用户访问量：合理的推荐可以尽可能吸引用户}
-    \item {用户到订单转化率}
-    \item {平均用户交易额：推荐搭售产品}
-  \end{itemize}  
-\end{frame}
-
-\section{如何评判推荐结果的质量？}
-
-\begin{frame}{推荐方法的多样性}
-  \begin{itemize}
-  \item {基于行业经验：首页单品推荐位，排序置顶}
-  \item {基于计算机算法：根据历史反馈数据决定值得推荐的内容}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{方法质量评价标准}
+\begin{frame}{推荐方法质量评价标准}
   \begin{itemize}
     \item {成本是否合理}
     \item {\emph{能够带来多少实际的用户到订单转化}}
   \end{itemize}
 \end{frame}
-
-\section{技术概要}
-
 
 \begin{frame}{合理的推荐建立在什么基础上？}
   \begin{itemize}
@@ -152,90 +132,26 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{人工推荐方法示例}
+\begin{frame}{两种常用手段}
   \begin{itemize}
-  \item {运营同学根据行业经验并结合产品近期的售出情况选出可以推荐的产品池P}
-  \item {在页面的某个固定位置，挑选产品池P中的部分产品按照一定的顺序排列出来}
-  \end{itemize}
-  \begin{block}<2->{此方法背后的原理}
-    \begin{itemize}
-    \item {优质内容：人工选择}
-    \item {不同用户的需要：标准一致，由确定的挑选方法决定}
-    \item {方法：排列的先后次序决定了与用户偏好的相关性}
-    \end{itemize}
-  \end{block}
-\end{frame}
-
-
-\begin{frame}{基于经验的推荐有哪些缺点}
-  \begin{itemize}
-    \item {成本：持续投入；}
-    \item {转化：依赖个人能力，结果不稳定；}
-    \item {难以满足不同的需求偏好}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{技术手段推荐}
-  \begin{block}{可标准化的考虑因素：通过计算机程序，综合量化指标计算可推荐性}
-    \begin{itemize}
-    \item {转化率}
-    \item {供应商好评率，qchat及时回复率}
-    \item {....}
-    \end{itemize}
-  \end{block}
-  \begin{block}{未知或不易标准化的因素：挖掘用户行为进行个性化推荐}
-    \begin{itemize}
-      \item {协同过滤}
-      \item {特征匹配推荐}
-    \end{itemize}
-  \end{block}
-\end{frame}
-
-\begin{frame}{协同过滤}
-  给偏好相似的一组用户推荐他们共同关注的内容
-
-  $$ A \rightarrow x, B \rightarrow x $$
-  $$ A \rightarrow y, C \rightarrow z $$
-  $$ B \Leftarrow {\color{blue}{y}},z ?$$
-
-  假设：A和B偏好产品x是因为产品x具备某些A和B共同看重的要素（\emph{特征}）
-  
-\end{frame}
-
-\begin{frame}{应用}
-  \begin{itemize}
-  \item {热词导航}
-  \item {列表页横插推荐}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{效果评估}
-  \begin{block}{成本}
-    一劳永逸
-  \end{block}
-
-  \begin{block}{带来的duv-p转化}
-    \begin{itemize}
-    \item {度假频道11/17-11/23: 0.92\%}
-    \item {同期列表页协同过滤推荐：[0.82\%-1.06\%]}
-    \end{itemize}
-  \end{block}
-
-\end{frame}
-
-\begin{frame}{突破协同过滤方法的局限：依赖访问行为}
-  \begin{enumerate}
-  \item {对于无行为或者行为少的用户无能为力；}
-  \item {当前统计到的影响用户比例：8\%}
-  \end{enumerate}
-  \uncover <2-> {
-    假设：A和B偏好产品x是因为产品x具备某些A和B共同看重的要素（\emph{特征}）
-    \begin{itemize}
-    \item {用户A和B有共同喜好 $ \Rightarrow $ A和B共同具备的个人特征与某个产品特征相关}
-    \item {对于没有访问行为的用户，获取特征即可；}
-    \end{itemize}
+  \item {
+    协同过滤(Collaborate Filtering)
+    \begin{enumerate}
+    \item {对于无行为或者行为少的用户无能为力；}
+    \item {当前统计到的影响用户比例：8\%}
+    \item {
+      带来的duv-p转化
+      \begin{itemize}
+      \item {度假频道11/17-11/23: 0.92\%}
+      \item {同期列表页协同过滤推荐：[0.82\%-1.06\%]}
+      \end{itemize}
+    }
+    \end{enumerate}
   }
+  \item {
+    特征匹配推荐(Contented Based)
+  }
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{基于特征匹配的推荐}
@@ -281,16 +197,112 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{预估新的影响范围：可能影响到多少没有在度假下单的用户}
-  \begin{block}{方法概览}
-    \begin{itemize}
-    \item {圈定行为分析范围：度假用户+机票酒店频道下了休闲度假类订单的用户}
-    \item {计算度假频道的用户有多大比例会出现在这个范围内，区分下过单与未下过单的比例}
-    \item {未下单的用户是潜在金矿：可以发觉偏好特征且未在度假进行购买}
-    \end{itemize}
-  \end{block}
+
+
+\section{实现与评估方法}
+
+\begin{frame}{个性化排序实现概览}
+  \begin{itemize}
+  \item {依靠经验进行特征精简}
+  \item {特征相关性模型计算，评估验证}
+  \item {依据特征相关性模型和用户特征，对搜索结果逐步进行权重调整。}
+  \end{itemize}
 \end{frame}
 
+\begin{frame}{用户特征$u_i$选择}
+  \begin{itemize}
+  \item { 出行方式偏好跟团or自由行 }
+  \item { 酒店高星级偏好 }
+  \item { 靠近热门商圈偏好 }
+  \item { 靠近地铁线路偏好 }
+  \item { 靠近火车站或机场偏好 }
+  \item { 靠近观光景区偏好 }
+  \item { 优惠产品(错峰，特价产品等)倾向 }
+  \item { 带儿童出行倾向 }
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{产品特征$p_i$选择}
+  \begin{itemize}
+  \item { 商品有优惠(特卖特价、甩位等) }
+  \item { 包含核心知名景点 }
+  \item { 住高级酒店 }
+  \item { 住宿靠近热门商圈 }
+  \item { 住宿靠近地铁线路 }
+  \item { 住宿靠近火车站或机场 }
+  \item { 住宿靠近观光景区 }
+  \item { 含精品免税店, 待整理 }
+  \item { 含自由活动 }
+  \item { 含节假日团期 }
+  \item { 含错峰出行团期 }
+  \item { 有儿童报价 }
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{特征相关性模型计算主要结论}
+  \begin{enumerate}
+  \item {含节假日团期、提供优惠、提供儿童价：无区分度的产品特征}
+  \item {多数用户属性与自由行产品的关联度大，“偏好优惠”与“带儿童出行”属性除外}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{作用于搜索排序并评估结果}
+  \begin{itemize}
+  \item {
+    同时间段上用小流量测试进行对比：排除所有可能的干扰因素
+    \begin{itemize}
+    \item {A: 置顶+个性化排序 }
+    \item {B: 个性化排序}
+    \item {C: 置顶}
+    \end{itemize}
+  }
+  \item {
+    量化个性化排序对搜索列表的影响：看不同环境中被个性化加权产品的曝光率有多大差别
+  }
+  \item {测试环境校验：确认测试系统本身不会带来转化率误差}
+  \item {
+    收集1/26-2/02的app端数据进行评估，主要看三个环境下uv维度的L-D, D-O，以及受个性化排序影响的用户占比
+  }
+  \end{itemize}
+  
+\end{frame}
+
+\section{数据结论}
+
+\begin{frame}{转化率与影响范围}
+  \begin{itemize}
+  \item {影响用户比例：IOS 21\%, ADR 15\%}
+  \item {L-D: 三个环境一致，IOS 60\%, ADR 56\%}
+  \item {
+    D-O:
+    \begin{itemize}
+    \item {IOS: A 3.52\%, B 3.43\%, C 3.57\%}
+    \item {ADR: A 2.92\%, B 2.96\%, C 2.96\%}
+    \end{itemize}
+  }
+  \end{itemize}
+\end{frame}
+
+\section*{总结思考}
+
+\begin{frame}
+  \begin{enumerate}
+  \item {
+    特征精简做的不够
+    \begin{itemize}
+    \item {三个无区分度的特征}
+    \item {进店铺属性与跟团游的相似度高}
+    \end{itemize}
+  }
+  \item {
+    试验需要继续：
+    \begin{itemize}
+    \item { 尝试新的特征 }
+    \item { 调整个性化属性的加权量 }
+    \end{itemize}
+  }
+  \end{enumerate}
+\end{frame}
 
 \end{CJK}
 
