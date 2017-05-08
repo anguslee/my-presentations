@@ -1,0 +1,195 @@
+\documentclass{beamer}
+% Replace the \documentclass declaration above
+% with the following two lines to typeset your 
+% lecture notes as a handout:
+%\documentclass[handout]{beamer}
+\usepackage{CJKutf8}
+\usepackage[T1]{fontenc}
+%\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{url}
+\usepackage{pifont}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+
+\usepgfplotslibrary{external}
+\pgfplotsset{width=10cm,compat=1.9}
+
+%% \usepackage{tikz}
+%% \usepackage{verbatim}
+%% \usepackage[active,tightpage]{preview}
+%% \PreviewEnvironment{center}
+%% \setlength\PreviewBorder{10pt}
+
+\usetikzlibrary{shapes,arrows}
+
+\tikzexternalize
+\everymath{\displaystyle}
+
+% There are many different themes available for Beamer. A comprehensive
+% list with examples is given here:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+% You can uncomment the themes below if you would like to use a different
+% one:
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{boxes}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{default}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+\usetheme{Warsaw}
+
+%% \newcommand{chartnumproducts} {
+%% }
+
+
+
+\begin{document}
+
+\begin{CJK}{UTF8}{gbsn}
+
+\title{2017.06晋级规则讲解}
+
+% A subtitle is optional and this may be deleted
+\subtitle{JAVA开发方向}
+
+\author{李庚}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[Qunar.com] % (optional, but mostly needed)
+{
+  \inst{1}
+  TC \\
+  Qunar.com
+}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date{\today}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{职级体系的变化}
+  原则：与老职级的评审规则兼容，不增加答辨评审的额外成本
+  \begin{itemize}
+  \item {
+    新老级别转换后，对技术能力的要求大体不变，有微调。依然通过对各项能力打分的方式决定是否通过答辨考核。
+  }
+  \item {
+    级别细分：P12, P13分别扩展成三个级别
+    \begin{itemize}
+      \item { 级别之间的差距缩小，晋级难度降低。}
+    \end{itemize}
+  }
+  \item { Q16级开始，经过公司TC评审。Q15以下的晋级BU内部决定。}
+  \item { 细则参考：\url{http://wiki.corp.qunar.com/pages/viewpage.action?pageId=155943526}}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{打分标准调整}
+  \begin{itemize}
+  \item 高级别的晋升重视分享和培养新人的能力
+  \item 具体的技术能力要求不变
+  \item 相临的档位标准，分差由1变为2
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  \begin{tabular}{l | c | c}
+    \hline
+    \textbf{开发能力} & \textbf{旧打分标准} & \textbf{新打分标准} \\
+    \hline
+        { 掌握所在部门要求的 \\
+          开发工具与CM工具，\\
+          代码符合公司开发命名规范，\\
+          了解公共组件库使用规则 } & {1} & {1} \\
+    \hline
+            { 有良好的单元测试习惯，\\
+              开发的单元测试代码能\\
+              够覆盖主要逻辑分支，\\
+              考虑到边界条件 } & {2} & {3} \\
+    \hline
+  \end{tabular}
+
+\end{frame}
+
+\begin{frame}{晋级资格说明}
+  申请职级Q15至Q20（原13级及以上），需要满足技术培养积分条件
+  \begin{itemize}
+  \item {
+    \emph{满10分}
+  }
+  \item {细则参考：\url{http://wiki.corp.qunar.com/pages/viewpage.action?pageId=63243061}}
+  \end{itemize}
+  
+\end{frame}
+
+
+\begin{frame}{如何准备}
+  \begin{enumerate}
+  \item {
+    回顾对自己工作的理解
+  }
+  \item {
+    阐述自己解决了哪些具体的技术问题，带来了什么结果
+  }
+  \item {
+    技术细节展示：
+    \begin{itemize}
+    \item { 代码：书写风格，遵循的标准 }
+    \item \emph{故障改进：方案与具体case}
+    \end{itemize}
+  }
+  \item {
+    控制好讲稿篇幅和演讲时间：25min陈述，5min提问
+  }
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Q \& A}
+  \begin{itemize}
+  \item {
+    个人职级查询：\url{http://ehr.corp.qunar.com}
+  }
+  \item {
+    JAVA晋级标准：\url{http://wiki.corp.qunar.com/pages/viewpage.action?pageId=155943526}
+  }
+  \item {
+    晋级资格积分要求：\url{http://wiki.corp.qunar.com/pages/viewpage.action?pageId=63243061}
+  }
+  \end{itemize}
+\end{frame}
+
+
+\end{CJK}
+
+\end{document}
