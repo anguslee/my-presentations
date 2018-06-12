@@ -1,0 +1,218 @@
+\documentclass[handout]{beamer}
+% Replace the \documentclass declaration above
+% with the following two lines to typeset your 
+% lecture notes as a handout:
+%\documentclass[handout]{beamer}
+\usepackage{CJKutf8}
+\usepackage[T1]{fontenc}
+%\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{url}
+\usepackage{pifont}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+
+\usepgfplotslibrary{external}
+\pgfplotsset{width=10cm,compat=1.9}
+
+%% \usepackage{tikz}
+%% \usepackage{verbatim}
+%% \usepackage[active,tightpage]{preview}
+%% \PreviewEnvironment{center}
+%% \setlength\PreviewBorder{10pt}
+
+\usetikzlibrary{shapes,arrows}
+
+\tikzexternalize
+\everymath{\displaystyle}
+
+% There are many different themes available for Beamer. A comprehensive
+% list with examples is given here:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+% You can uncomment the themes below if you would like to use a different
+% one:
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{boxes}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{default}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+\usetheme{Warsaw}
+
+%% \newcommand{chartnumproducts} {
+%% }
+
+
+
+\begin{document}
+
+\begin{CJK}{UTF8}{gbsn}
+
+\title{如何准备晋级答辨}
+
+% A subtitle is optional and this may be deleted
+%\subtitle{}
+
+\author{李庚}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[Qunar.com] % (optional, but mostly needed)
+{
+  \inst{1}
+  Corp TC \\
+  Qunar.com
+}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date{\today}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{晋级考核的基本原则}
+  考察\emph{工程师}对\emph{计算科学技术}本身的\emph{理解}以及\emph{熟练应用}的程度
+  \begin{enumerate}
+  \item <2-> {
+    技术基础是否扎实？
+  }
+  \item <3-> {
+    应用计算科学技术解决了什么问题？
+    \begin{itemize}
+    \item 业务方面
+    \item 技术方面
+    \end{itemize}
+  }
+  \item <4-> {
+    工程应用是否熟练？
+    \begin{itemize}
+    \item 对需求是否正确理解
+    \item 实现目标的资源代价是否合理
+    \end{itemize}
+  }
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{能力考核模型}
+  \begin{itemize}
+  \item  {
+    \emph{开发能力}：\uncover<2-> { 给定清晰的需求描述之后，正确实现需求目标的能力。}
+  }
+  \item  {
+    \emph{运维能力}：\uncover<3-> { 利用现有的工具和服务，将系统正确运行并持久维护的能力。}
+  }
+  \item  {
+    \emph{业务能力}：\uncover<4-> { 正确理解业务场景，并转化成技术层面合理设计方案的能力。}
+  }
+  \item  {
+    \emph{架构能力}：\uncover<5-> { 对于复杂的需求场景，选择合理的技术方案和成熟的技术组件解决问题的能力。}
+  }
+  \item  {
+    \emph{学习培养}：\uncover<6-> { 将工作中的经验积累总结，形成可供推广的技术实践方法的能力。 }
+  }
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{答辨基本要求}
+  \begin{enumerate}
+  \item {
+    阐述对自己工作内容的理解
+  }
+  \item {
+    详述自己的工作解决了哪些具体的问题，带来了什么样的结果
+    \begin{itemize}
+    \item { 叙述思路：\emph{问题分析 \textrightarrow 技术解决方案 \textrightarrow 量化结果} }
+    \item { 围绕前面的几个考核方面阐述，切忌流水账 }
+    \end{itemize}
+  }
+  \item {
+    细节秀：
+    \begin{itemize}
+    \item { 代码：书写风格，遵循的标准 }
+    \item \emph{故障改进：方案与具体case}
+    \end{itemize}
+  }
+  \item {
+    控制好讲稿篇幅和演讲时间：25min陈述，5min提问
+  }
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{避免答辨的常见误区}
+  \begin{enumerate}
+  \item {
+    “我具体做了什么”比“为什么要做”重要。
+    \uncover <2-> {
+      \begin{itemize}
+      \item 无地放矢：被质疑业务能力
+      \item 重新发明轮子：被质疑架构能力
+      \end{itemize}
+    }
+  }
+  \item {
+    评委们都是大牛，自己讲的内容他们一听就懂。所以也不用太细致的讲。
+    \uncover <3-> {
+      \begin{itemize}
+      \item { 评委不会来自你自己的技术团队，甚至很可能不会来自你经常合作的团队。}
+      \item { 评委并不了解你的工作，答辨演讲的目标就是让评委了解你的能力。 }
+      \end{itemize}
+    }
+  }
+  \end{enumerate}
+  
+\end{frame}
+
+\begin{frame}{Q \& A}
+  \begin{itemize}
+  \item {
+    个人职级查询：\url{http://ehr.corp.qunar.com}
+  }
+  \item {
+    晋级资格积分要求：\url{http://wiki.corp.qunar.com/pages/viewpage.action?pageId=63243061}
+  }
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{晋级标准细则参考}
+  \begin{itemize}
+  \item { \emph{JAVA开发}: \url{http://wiki.corp.qunar.com/pages/viewpage.action?pageId=155943526} }
+  \item { \emph{PHP \& PYTHON开发}: \url{http://wiki.corp.qunar.com/confluence/pages/viewpage.action?pageId=79242519} }
+  \item { \emph{客户端开发}：\url{http://wiki.corp.qunar.com/confluence/pages/viewpage.action?pageId=79251833} }
+  \item { \emph{前端开发}：\url{http://wiki.corp.qunar.com/confluence/pages/viewpage.action?pageId=78572334} }
+  \item { \emph{QA}: \url{http://wiki.corp.qunar.com/confluence/pages/viewpage.action?pageId=63243228} }
+  \item { \emph{DBA \& OPS}: \url{http://wiki.corp.qunar.com/confluence/pages/viewpage.action?pageId=78572475} }
+  \end{itemize}
+\end{frame}
+
+
+
+\end{CJK}
+
+\end{document}
